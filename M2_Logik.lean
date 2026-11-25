@@ -164,7 +164,12 @@ theorem aufgabe_2_9 (A B : Prop) : ¬(A ∨ B) → ¬A ∧ ¬B := by
   sorry
 -- #tipp 2 9
 
-/- Daten für Tipps und Prüfstation (verschlüsselt)
+-- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann dein Code für ILIAS.
+#mission 2 prüft aufgabe_2_1 aufgabe_2_2 aufgabe_2_3 aufgabe_2_4 aufgabe_2_5 aufgabe_2_6 aufgabe_2_7 aufgabe_2_8 aufgabe_2_9
+
+
+
+/- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
 ⟦2⟧ bvghbcf`3`2!bvghbcf`3`3!bvghbcf`3`4!bvghbcf`3`5!bvghbcf`3`6!bvghbcf`3`7!bvghbcf`3`8!bvghbcf`3`9!bvghbcf`3`:}MFNNB.4DY4N
 ⟦2 1 1⟧ 💢!Bvghbcf!3/2-!Ujqq!2;!Hfobv!xjf!cfjtqjfm`{xfjuft-!ovs!xjse!ejftnbm!ebt!FSTUF!Bshvnfou!{vsýdlhfhfcfo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!2!3
 ⟦2 1 2⟧ 💢!Bvghbcf!3/2-!Ujqq!3;!gvo!b!`!>?!b¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!2!4
@@ -194,7 +199,3 @@ theorem aufgabe_2_9 (A B : Prop) : ¬(A ∨ B) → ¬A ∧ ¬B := by
 ⟦2 9 2⟧ 💢!Bvghbcf!3/:-!Ujqq!3;!Nju!b!;!B!ibtu!ev!Ps/jom!b!;!B!∩!C-!voe!i!nbdiu!ebsbvt!Gbmtf;!fybdu!i!)Ps/jom!b*/!Gýs!C!hfobvtp!nju!Ps/jos/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!:!4
 ⟦2 9 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/:;¶¶uifpsfn!bvghbcf`3`:!)B!C!;!Qspq*!;!­)B!∩!C*!↓!­B!∨!­C!;>!cz¶!!jousp!i¶!!dpotusvdups¶!!¸!jousp!b<!fybdu!i!)Ps/jom!b*¶!!¸!jousp!c<!fybdu!i!)Ps/jos!c*
 -/
-
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
-#mission 2 prüft aufgabe_2_1 aufgabe_2_2 aufgabe_2_3 aufgabe_2_4 aufgabe_2_5 aufgabe_2_6 aufgabe_2_7 aufgabe_2_8 aufgabe_2_9

@@ -114,7 +114,12 @@ theorem summe_verdoppelt (xs : List Nat) : (verdopple xs).sum = 2 * xs.sum := by
   sorry
 -- #tipp 4 4
 
-/- Daten für Tipps und Prüfstation (verschlüsselt)
+-- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann dein Code für ILIAS.
+#mission 4 prüft ungerade_formel teilmengen_formel laenge_bleibt summe_verdoppelt
+
+
+
+/- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
 ⟦4⟧ vohfsbef`gpsnfm!ufjmnfohfo`gpsnfm!mbfohf`cmfjcu!tvnnf`wfsepqqfmu}MFNNB.GYYQB
 ⟦4 1 1⟧ 💢!Bvghbcf!5/2-!Ujqq!2;!Efs!Cfxfjt!ibu!hfobv!efotfmcfo!Bvgcbv!xjf!hbvtt/!Lpqjfsf!jio!voe!qbttf!fjofo!Obnfo!bo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!2!3
 ⟦4 1 2⟧ 💢!Bvghbcf!5/2-!Ujqq!3;!Jo!efs![fjmf!tjnq!pomz!\///^!nvtt!kfu{u!vohfsbef!tubuu!tvnnf!tufifo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!2!4
@@ -129,7 +134,3 @@ theorem summe_verdoppelt (xs : List Nat) : (verdopple xs).sum = 2 * xs.sum := by
 ⟦4 4 2⟧ 💢!Bvghbcf!5/5-!Ujqq!3;!Gbmm!dpot!y!yt!jw;!tjnq!pomz!\wfsepqqmf-!Mjtu/tvn`dpot^!voe!ebobdi!hsjoe-!xjf!cfj!hbvtt/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!5!4
 ⟦4 4 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!5/5;¶¶uifpsfn!tvnnf`wfsepqqfmu!)yt!;!Mjtu!Obu*!;!)wfsepqqmf!yt*/tvn!>!3!+!yt/tvn!;>!cz¶!!joevdujpo!yt!xjui¶!!}!ojm!>?!sgm¶!!}!dpot!y!yt!jw!>?¶!!!!!!tjnq!pomz!\wfsepqqmf-!Mjtu/tvn`dpot^¶!!!!!!hsjoe
 -/
-
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
-#mission 4 prüft ungerade_formel teilmengen_formel laenge_bleibt summe_verdoppelt

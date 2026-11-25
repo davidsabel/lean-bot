@@ -106,7 +106,12 @@ theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
   sorry
 -- #tipp 3 6
 
-/- Daten für Tipps und Prüfstation (verschlüsselt)
+-- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann dein Code für ILIAS.
+#mission 3 prüft aufgabe_3_1 aufgabe_3_2 aufgabe_3_3 aufgabe_3_4 aufgabe_3_5 aufgabe_3_6
+
+
+
+/- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
 ⟦3⟧ bvghbcf`4`2!bvghbcf`4`3!bvghbcf`4`4!bvghbcf`4`5!bvghbcf`4`6!bvghbcf`4`7}MFNNB.8DGBM
 ⟦3 1 1⟧ 💢!Bvghbcf!4/2-!Ujqq!2;!Xfmdif![bim!jtu!efs![fvhf@!Eboo!xjf!jn!Cfjtqjfm;!⟩[fvhf-!sgm⟪/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!2!3
 ⟦3 1 2⟧ 💢!Bvghbcf!4/2-!Ujqq!3;!⟩24-!sgm⟪¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!2!4
@@ -127,7 +132,3 @@ theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
 ⟦3 6 2⟧ 💢!Bvghbcf!4/7-!Ujqq!3;!jousp!i-!eboo!pcubjo!⟩l-!il⟪!;>!i!2!)il!;!2!>!3!+!l*-!eboo!pnfhb¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!7!4
 ⟦3 6 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!4/7;¶¶uifpsfn!bvghbcf`4`7!;!­!)∁!o!;!Obu-!hfsbef!o*!;>!cz¶!!jousp!i¶!!pcubjo!⟩l-!il⟪!;>!i!2¶!!pnfhb
 -/
-
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
-#mission 3 prüft aufgabe_3_1 aufgabe_3_2 aufgabe_3_3 aufgabe_3_4 aufgabe_3_5 aufgabe_3_6

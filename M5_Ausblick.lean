@@ -79,13 +79,14 @@ theorem beispiel_5_3 : Nat.Prime (2 ^ 7 - 1) := by
   und Lean hat ihn genauso geprüft wie deine kleinen Beweise hier.
 -/
 
-/- Daten für Tipps und Prüfstation (verschlüsselt)
+-- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann dein Code für ILIAS.
+#mission 5 prüft beispiel_5_3
+
+
+
+/- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
 ⟦5⟧ cfjtqjfm`6`4}MFNNB.5LQK5
 ⟦5 1 1⟧ 💢!Bvghbcf!6/2-!Ujqq!2;!Tdibv!ejs!cfjtqjfm`6`2!bo;!Epsu!{fjhu!fjof!fjo{jhf!Ublujl-!ebtt!212!fjof!Qsjn{bim!jtu/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!3
 ⟦5 1 2⟧ 💢!Bvghbcf!6/2-!Ujqq!3;!opsn`ovn¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!4
 ⟦5 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!6/2;¶¶uifpsfn!cfjtqjfm`6`4!;!Obu/Qsjnf!)3!_!8!.!2*!;>!cz¶!!opsn`ovn
 -/
-
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
-#mission 5 prüft beispiel_5_3

@@ -100,7 +100,12 @@ def bewertung (punkte : Nat) : String :=
 
 theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "bestanden" := ⟨rfl, rfl⟩
 
-/- Daten für Tipps und Prüfstation (verschlüsselt)
+-- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann dein Code für ILIAS.
+#mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung
+
+
+
+/- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
 ⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}MFNNB.Q4GZX
 ⟦0 1 1⟧ 💢!Bvghbcf!1/2-!Ujqq!2;!Tdibv!ejs!wfsepqqmf!bo/!Xbt!nvttu!ev!åoefso@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!3
 ⟦0 1 2⟧ 💢!Bvghbcf!1/2-!Ujqq!3;!Tubuu!3!+!o!csbvditu!ev!4!+!o/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!4
@@ -115,7 +120,3 @@ theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "be
 ⟦0 4 2⟧ 💢!Bvghbcf!1/5-!Ujqq!3;!jg!qvoluf!=!61!uifo!#ojdiu!cftuboefo#!fmtf!#cftuboefo#¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!5!4
 ⟦0 4 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/5;¶¶efg!cfxfsuvoh!)qvoluf!;!Obu*!;!Tusjoh!;>¶!!jg!qvoluf!=!61!uifo!#ojdiu!cftuboefo#!fmtf!#cftuboefo#
 -/
-
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
-#mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung

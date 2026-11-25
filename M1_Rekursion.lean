@@ -97,7 +97,12 @@ theorem test_teilmengen : teilmengen 10 = 1024 := rfl
   einfach eine rekursive Funktion, die Beweise zurückgibt.
 -/
 
-/- Daten für Tipps und Prüfstation (verschlüsselt)
+-- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann dein Code für ILIAS.
+#mission 1 prüft test_summeQuadrate test_fak test_teilmengen
+
+
+
+/- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
 ⟦1⟧ uftu`tvnnfRvbesbuf!uftu`gbl!uftu`ufjmnfohfo}MFNNB.DQY:O
 ⟦1 1 1⟧ 💢!Bvghbcf!2/2-!Ujqq!2;!Gbtu!xjf!cfj!tvnnf/!Xbt!xjse!cfjn!Tdisjuu!wpo!o!{v!o!,!2!eb{vhf{åimu@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!2!3
 ⟦1 1 2⟧ 💢!Bvghbcf!2/2-!Ujqq!3;!Tubuu!)o!,!2*!lpnnu!)o!,!2*!+!)o!,!2*!eb{v;!tvnnfRvbesbuf!o!,!)o!,!2*!+!)o!,!2*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!2!4
@@ -109,7 +114,3 @@ theorem test_teilmengen : teilmengen 10 = 1024 := rfl
 ⟦1 3 2⟧ 💢!Bvghbcf!2/4-!Ujqq!3;!}!1!>?!2!voe!}!o!,!2!>?!3!+!ufjmnfohfo!o¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!4!4
 ⟦1 3 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!2/4;¶¶efg!ufjmnfohfo!;!Obu!↓!Obu¶!!}!1!!!!!>?!2¶!!}!o!,!2!>?!3!+!ufjmnfohfo!o
 -/
-
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
-#mission 1 prüft test_summeQuadrate test_fak test_teilmengen
