@@ -2,8 +2,11 @@ import Lean
 /-
   Mission 0: Hallo Lean!
   ======================
-  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
-  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM0_Hallo_Tipps.lean
+  Hängst du fest? Schreibe ganz unten in eine neue Zeile zum Beispiel
+      #tipp 0 1        (Tipp 1 zu Aufgabe 0.1)
+      #tipp 0 1 2      (Tipp 2)
+      #tipp 0 1 3      (Lösung dieser Aufgabe)
+  und klicke darauf. Rechts erscheint die Hilfe.
 
   Lean ist eine Programmiersprache. Rechts im Fenster siehst du,
   was Lean zu jeder Zeile sagt. Klicke auf eine Zeile mit #eval.
@@ -120,5 +123,41 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
   else
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
+
+/-- Hilfen: `#tipp m a` zeigt Tipp 1 zu Aufgabe m.a, `#tipp m a 2` Tipp 2, `#tipp m a 3` die Lösung. -/
+def tippHex (c : Char) : Nat :=
+  if c.isDigit then c.toNat - '0'.toNat else c.toNat - 'a'.toNat + 10
+def tippText (hex : String) : String := Id.run do
+  let k := "DDA-2026".toUTF8
+  let cs := hex.toList.toArray
+  let mut b : ByteArray := .empty
+  for i in [0:cs.size / 2] do
+    b := b.push ((tippHex cs[2*i]! * 16 + tippHex cs[2*i+1]!) ^^^ (k.get! (i % k.size)).toNat).toUInt8
+  return (String.fromUTF8? b).getD "?"
+open Lean Elab Command in
+elab "#tipp " m:num a:num s:(num)? : command => do
+  let stufe := (s.map (·.getNat)).getD 1
+  let tabelle : List (Nat × Nat × Nat × String) := [
+    (0, 1, 1, "1727294c4710565f3664374840545d463428240d535e1c161325320d5f4541453064255812f39658202133430d"),
+    (0, 1, 2, "17302059461000166e642f0d50425343272c32591254471677646b0d5c1e"),
+    (0, 1, 3, "2021270d445540523621284b53535a53646c2f0d08107c57306d6117127e5342647e7c0d011018162a"),
+    (0, 2, 1, "002d240d74455c5d302d2e4312555c5336232848125853426423244353451252212a32485e5257586405344b50514718"),
+    (0, 2, 2, "09312d595b405e5f3e2d245f5710565f216423485b5457586405334a475d575830217b0d5042575f3021610712585d532c216f"),
+    (0, 2, 3, "2021270d545c5353272c240d1a5240532d30240d08107c57306d61055a5f575e21647b0d7c51461f647e61635344120c7964235f57594653646e61455d555a53"),
+    (0, 3, 1, "012d2f0d7342554329212f5912475b536426244412465744202b315d5e551e162526245f12545b53641e20455e10455f362061405b4412452d27290d41555e5437306140475c465f342828575b5540426a"),
+    (0, 3, 2, "2a646b0d5c"),
+    (0, 3, 3, "2021270d434553523625350d1a5e120c640a20591b1008160a25350d080d1258646e6143"),
+    (0, 4, 1, "132d240d535d42532868614c50554016292d350d5c454016212d2f485f105b50646a6f0312445a532a646f031c10575a372161031c1e1c"),
+    (0, 4, 2, "2d22615d475e594221647d0d070012422c212f0d105e5b552c30614f574346572a2024431010575a3721610f50554142252a25485c12"),
+    (0, 4, 3, "2021270d505545533630344355101a46312a2a59571008160a253504120a1265303628435510080b4e646144541042432a2f3548120c120374643545575e12142a2d2245461050533730204356555c1464212d5e571010542137354c5c54575866")
+  ]
+  let nr := s!"{m.getNat}.{a.getNat}"
+  match tabelle.find? (fun (x, y, z, _) => x == m.getNat && y == a.getNat && z == stufe) with
+  | some (_, _, z, hex) =>
+    if z == 3 then
+      logInfo m!"🔑 Lösung zu Aufgabe {nr}:\n\n{tippText hex}"
+    else
+      logInfo m!"💡 Aufgabe {nr}, Tipp {z}: {tippText hex}\n\nNoch ein Schritt weiter: #tipp {m.getNat} {a.getNat} {z + 1}"
+  | none => logWarning m!"Zu Aufgabe {nr} gibt es keinen Tipp {stufe}. Probiere z.B. #tipp {m.getNat} 1"
 
 #mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung

@@ -2,8 +2,11 @@ import Mathlib
 /-
   Mission 5: Ausblick, die große Bibliothek Mathlib
   =================================================
-  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
-  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM5_Ausblick_Tipps.lean
+  Hängst du fest? Schreibe ganz unten in eine neue Zeile zum Beispiel
+      #tipp 5 1        (Tipp 1 zu Aufgabe 5.1)
+      #tipp 5 1 2      (Tipp 2)
+      #tipp 5 1 3      (Lösung dieser Aufgabe)
+  und klicke darauf. Rechts erscheint die Hilfe.
 
   Mathlib ist eine riesige Sammlung formal bewiesener Mathematik
   (über 250 000 Sätze), geschrieben von Hunderten Freiwilligen.
@@ -102,5 +105,32 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
   else
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
+
+/-- Hilfen: `#tipp m a` zeigt Tipp 1 zu Aufgabe m.a, `#tipp m a 2` Tipp 2, `#tipp m a 3` die Lösung. -/
+def tippHex (c : Char) : Nat :=
+  if c.isDigit then c.toNat - '0'.toNat else c.toNat - 'a'.toNat + 10
+def tippText (hex : String) : String := Id.run do
+  let k := "DDA-2026".toUTF8
+  let cs := hex.toList.toArray
+  let mut b : ByteArray := .empty
+  for i in [0:cs.size / 2] do
+    b := b.push ((tippHex cs[2*i]! * 16 + tippHex cs[2*i+1]!) ^^^ (k.get! (i % k.size)).toNat).toUInt8
+  return (String.fromUTF8? b).getD "?"
+open Lean Elab Command in
+elab "#tipp " m:num a:num s:(num)? : command => do
+  let stufe := (s.map (·.getNat)).getD 1
+  let tabelle : List (Nat × Nat × Nat × String) := [
+    (5, 1, 1, "1727294c4710565f366423485b43425f21281e186d0112572a7e61695d4246163e21284a4610575f2a2161485b5e485f23216179535b465f2f686149534341167574700d57595c53641433445f4a535e2864285e461e"),
+    (5, 1, 2, "2a2b33406d5e475b"),
+    (5, 1, 3, "302c244240555f162621285e4259575a1b711e1e120a127825306f7d40595f53646c730d6c10051669647004120a0f16263d4b0d125e5d44291b2f585f")
+  ]
+  let nr := s!"{m.getNat}.{a.getNat}"
+  match tabelle.find? (fun (x, y, z, _) => x == m.getNat && y == a.getNat && z == stufe) with
+  | some (_, _, z, hex) =>
+    if z == 3 then
+      logInfo m!"🔑 Lösung zu Aufgabe {nr}:\n\n{tippText hex}"
+    else
+      logInfo m!"💡 Aufgabe {nr}, Tipp {z}: {tippText hex}\n\nNoch ein Schritt weiter: #tipp {m.getNat} {a.getNat} {z + 1}"
+  | none => logWarning m!"Zu Aufgabe {nr} gibt es keinen Tipp {stufe}. Probiere z.B. #tipp {m.getNat} 1"
 
 #mission 5 prüft beispiel_5_3
