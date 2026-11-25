@@ -15,24 +15,12 @@ import Lean
 -/
 
 /- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
-def tippText (hex : List Char) : String := Id.run do
-  let k := "DDA-2026".toList.map Char.toNat
-  let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
-  let mut b : ByteArray := .empty
-  for i in [0:hex.length / 2] do
-    b := b.push ((w hex[2*i]! * 16 + w hex[2*i+1]!) ^^^ k[i % k.length]!).toUInt8
-  return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
-  let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
-  let marke := s!"⟦{x} {y} {z}⟧ ".toList
-  let zeilen := ((← getFileMap).source.splitOn "\n").map (·.toList.dropWhile (· == ' '))
-  match zeilen.find? (marke.isPrefixOf ·) with
-  | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
-  | some zeile =>
-    let text := tippText ((zeile.drop marke.length).filter (·.isAlphanum))
-    if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
-    else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
+  let marke := s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ "
+  match ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke) with
+  | some z => logInfo (String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1)))
+  | none => logWarning "Diesen Tipp gibt es nicht."
 
 /- ─────────────────────────────────────────────────────────────
   Schritt 1: Summen
@@ -137,14 +125,14 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- verschlüsselte Tipps
-  ⟦1 1 1⟧ 0225325912475b53642624441243475b29216f0d65514116332d33491252575f2964124e5a425b42306437425c105c163e316143121b1207642020574757574c87e02941460f
-  ⟦1 1 2⟧ 1730205946101a58646f611c1b1059592929350d1a5e121d6475680d18101a58646f611c1b1056573e317b0d41455f5b2115344c5642534221642f0d19101a58646f611c1b1018166c2a610612011b
-  ⟦1 1 3⟧ 2021270d41455f5b2115344c5642534221647b0d7c514616a6c2d30d7c51463c64643d0d0210121664647c131200381664386143121b120764797f0d41455f5b2115344c5642534221642f0d19101a58646f611c1b1018166c2a610612011b
-  ⟦1 2 1⟧ 02252d411200081613212d4e5a55126c252c2d0df1945c522136350d57595c1614362e49475b46162a2d2245460f127025282d0d5c101916757e6168404357423e2161445c1041432929240d565141166f64255840535a166e6a
-  ⟦1 2 2⟧ 3864710d0f0e120764312f49124c1258646f611c120d0c1622252a0d5c1018166c2a610612011b
-  ⟦1 2 3⟧ 2021270d545159167e640f4c4610d0b0d6640f4c463a12163864710d12101216797a611c3810124a642a61061201120b7a64274c59105c166e646943121b12076d
-  ⟦1 3 1⟧ 002d240d5e55574421640c485c5757162c25350d55555c57316424445c551262212d2d40575e5553646c3244515812452128235e46191c16112a250d57595c162a2134484110775a212924434610445336202e5d42555e426420284812715c4c252c2d17127a57522164204146551262212d2d40575e55536423284f46105745642128435f515e162b2c2f4812455c52642128435f515e16292d350d56555f162a2134485c10775a21292443461e
-  ⟦1 3 2⟧ 3864710d0f0e120764312f49124c1258646f611c120d0c1676646b0d46555b5a29212f4a575e1258
-  ⟦1 3 3⟧ 2021270d46555b5a29212f4a575e120c640a205912d2b4a4640a20593810124a6474610d1210120b7a64702712104e162a646a0d03100f08647661071244575f2829244355555c162a
+⟦1 1 1⟧ 💢!Bvghbcf!2/2-!Ujqq!2;!Gbtu!xjf!cfj!tvnnf/!Xbt!xjse!cfjn!Tdisjuu!wpo!o!{v!o!,!2!eb{vhf{åimu@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!2!3
+⟦1 1 2⟧ 💢!Bvghbcf!2/2-!Ujqq!3;!Tubuu!)o!,!2*!lpnnu!)o!,!2*!+!)o!,!2*!eb{v;!tvnnfRvbesbuf!o!,!)o!,!2*!+!)o!,!2*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!2!4
+⟦1 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!2/2;¶¶efg!tvnnfRvbesbuf!;!Obu!↓!Obu¶!!}!1!!!!!>?!1¶!!}!o!,!2!>?!tvnnfRvbesbuf!o!,!)o!,!2*!+!)o!,!2*
+⟦1 2 1⟧ 💢!Bvghbcf!2/3-!Ujqq!2;!Gbmm!1;!Xfmdif![bim!åoefsu!fjo!Qspevlu!ojdiu@!Gbmm!o!,!2;!Fstfu{f!jo!tvnnf!ebt!,!evsdi!+/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!3!3
+⟦1 2 2⟧ 💢!Bvghbcf!2/3-!Ujqq!3;!}!1!>?!2!voe!}!o!,!2!>?!gbl!o!+!)o!,!2*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!3!4
+⟦1 2 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!2/3;¶¶efg!gbl!;!Obu!↓!Obu¶!!}!1!!!!!>?!2¶!!}!o!,!2!>?!gbl!o!+!)o!,!2*
+⟦1 3 1⟧ 💢!Bvghbcf!2/4-!Ujqq!2;!Ejf!mffsf!Nfohf!ibu!hfobv!fjof!Ufjmnfohf!)tjdi!tfmctu*/!Voe!fjo!ofvft!Fmfnfou!wfsepqqfmu!ejf!Bo{bim;!Kfef!bmuf!Ufjmnfohf!hjcu!ft!fjonbm!piof!voe!fjonbm!nju!efn!ofvfo!Fmfnfou/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!4!3
+⟦1 3 2⟧ 💢!Bvghbcf!2/4-!Ujqq!3;!}!1!>?!2!voe!}!o!,!2!>?!3!+!ufjmnfohfo!o¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!4!4
+⟦1 3 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!2/4;¶¶efg!ufjmnfohfo!;!Obu!↓!Obu¶!!}!1!!!!!>?!2¶!!}!o!,!2!>?!3!+!ufjmnfohfo!o
 -/
 #mission 1 prüft test_summeQuadrate test_fak test_teilmengen

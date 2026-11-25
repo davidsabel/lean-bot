@@ -18,24 +18,12 @@ import Lean
 -/
 
 /- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
-def tippText (hex : List Char) : String := Id.run do
-  let k := "DDA-2026".toList.map Char.toNat
-  let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
-  let mut b : ByteArray := .empty
-  for i in [0:hex.length / 2] do
-    b := b.push ((w hex[2*i]! * 16 + w hex[2*i+1]!) ^^^ k[i % k.length]!).toUInt8
-  return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
-  let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
-  let marke := s!"⟦{x} {y} {z}⟧ ".toList
-  let zeilen := ((← getFileMap).source.splitOn "\n").map (·.toList.dropWhile (· == ' '))
-  match zeilen.find? (marke.isPrefixOf ·) with
-  | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
-  | some zeile =>
-    let text := tippText ((zeile.drop marke.length).filter (·.isAlphanum))
-    if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
-    else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
+  let marke := s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ "
+  match ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke) with
+  | some z => logInfo (String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1)))
+  | none => logWarning "Diesen Tipp gibt es nicht."
 
 /- ─────────────────────────────────────────────────────────────
   Schritt 1: Implikation = Funktion
@@ -204,32 +192,32 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- verschlüsselte Tipps
-  ⟦2 1 1⟧ 03212f4c4710455f216423485b43425f21281e5745555b4221376d0d5c454016332d334912545b5337292041125453456401137e6675127736233440575e46163e3133ee8e5359512123244f575e1c
-  ⟦2 1 2⟧ 22312f0d53106d16797a614c
-  ⟦2 1 3⟧ 302c244240555f162531274a53525769761b700d1a711274647e617d405f421f647e616c12d2b4a4640661cfb4a21277647e7c27121054432a64200d6d100f086425
-  ⟦2 2 1⟧ 0036244412714051312924434655081622647b0d7310d0b0d66403011257120c640661cfb4a2127564312f491251120c64056f0d655957162621280d50555b45342d24416d5d421633212f495744125b252a616b475e59422d2b2f485c1053586864254457435f5728643b5a5759125e2d2a354840555b58252a2548401e
-  ⟦2 2 2⟧ 0531320d53105f57272c350d5410575f2a212f0d705545532d37615b5d5e12746864254c405147456429204e5a44125164212843575e127421332444411044592a640217125647586422614a1251120b7a64260d1a5612576d
-  ⟦2 2 3⟧ 302c244240555f162531274a53525769761b730d1a7112746407611712604059346d611712187316a6c2d30d701912d4c2d661057010d0b0d664020412d2b4a4640561cfb4a21275647e7c27121054432a64270d55105316797a614a12185416256d
-  ⟦2 3 1⟧ 1425205f1251474534252246575e12412d2161445c1050532d373144575c6d432a206d0d56515c58642a345f1254575864212843575e1262212d2d0d484540f5f8272a4a575257586a
-  ⟦2 3 2⟧ 22312f0dd0af9a5768641ecfad99120b7a64200d1a545744643e36485b4457161021284112475b4420642f44515846162321235f5345515e306861495342475b641b68
-  ⟦2 3 3⟧ 302c244240555f162531274a53525769761b720d1a711274647e617d405f421f647e616c12d2ba91640661cfb4a21277647e7c27121054432a64a3b29a511e161ba6de84120d0c1625
-  ⟦2 4 1⟧ 1e3324441271405131292443465512412d2161445c1050532d373144575c6d4c3321285957431c161e3133ee8e5359512123244f575e12412d36250d57595c161425205f12475b53642d2f0d50555b45342d24416d455c526a
-  ⟦2 4 2⟧ 22312f0d53105016797a61cfad98531a6426a3b29b
-  ⟦2 4 3⟧ 302c244240555f162531274a53525769761b750d1a711274647e617d405f421f647e616c12d2b4a4640661cfb4a2127764a6c98a1272120c794e610d54455c162564230d0f0e12d4dbec20011252d0a9ed
-  ⟦2 5 1⟧ 002d245e5f515e162d37350d565957161601026566751265212d3548125257412d2132485c1e
-  ⟦2 5 2⟧ 22312f0d50100f08640b33035b5e401626
-  ⟦2 5 3⟧ 302c244240555f162531274a53525769761b740d1a711274647e617d405f421f647e616f12d2b4a4640561cfba981274647e7c27121054432a64230d0f0e1279366a2843401050
-  ⟦2 6 1⟧ 02252d41475e465336372245575956432a23615a5b55125f2a6423485b43425f21281e4256554018640d2f0d50555b52212a616bf1945e5a212a614553434616203161485b5e57586406245a57594116322b2f0d731e
-  ⟦2 6 2⟧ 22312f0d5a100f08642920595158125e643328595a104e160b366f445c5c125764797f0d53104e160b366f445c42125764797f0d53101a4c3321280d68555b5a212a615a5b55125f296403485b43425f212868
-  ⟦2 6 3⟧ 302c244240555f162531274a53525769761b770d1a71120c641433424219120c640561cfba98127764a6c7bf1271120c794e610d54455c162c647c13125d5342272c614512475b422c4e610d12104e160b366f445c5c125764797f0d533a121664643d0d7d421c5f2a36614c120d0c1625
-  ⟦2 7 1⟧ 1727295f575950536421320d55555c5731372e0d5a595c16332d240d50555b45342d24416d5e5b552c306f0d7e555358643728485a441e162025325e125457446410385d1254574437212d4f57105b45306a
-  ⟦2 7 2⟧ 22312f0d53105c5764797f0d5c511257
-  ⟦2 7 3⟧ 302c244240555f162531274a53525769761b760d1a71120c641433424219120c640561cfb4a212f4e886ed6c120a0f3c646427585c1053162a2561100c105c576425
-  ⟦2 8 1⟧ 0d296148404346532a64074c5e5c125e2537350d56451257647e616c12455c526426611712721e162d29615745555b42212a614c120a127764312f491253120c64076f0d65f3965e282161405b44125a2122350d5d5457446436284a5a4412522d21615d534341532a20240d61555b422168615a5b55125f2a6423485b43425f21281e59535b465f2f1b2e4957421c
-  ⟦2 8 2⟧ 386428435e105016797a61415756460d6421394c514412d4dbec20011252d0a9ed64344356104e162d2a330d51100f086436284a5a440916213c204e4610d0a9ec256d0d51d2ad9f
-  ⟦2 8 3⟧ 302c244240555f162531274a53525769761b790d1a7112746407611712604059346d6117127112d4cce361057010d0beec64020412d2b4a4646c000dd0b89516066d61cfba98121e0564a3a59510711f647e7c0d50493816642d2f59405f12d4dbec20011258d0a9ed4e610d515141533764290d4559465e4e64615112595c5a642661100c105e5322307a0d574853553064a3b29a511e1626a6de843810124a642d2f5f1253120b7a6433445558460d6421394c514412d4dbec20011253d0a9ed
-  ⟦2 9 1⟧ 062126445c5e5716292d350d5b5e46442b64290d475e5616272b2f5e46424755302b330d455957162d2a614f575941462d212d72465159422d2f1e585c541c1600252f4312594142643e6f6f1c10f09a05643b58124a575f23212f0112515e452b6424445c551270312a2a595b5f5c0c642d2f59405f12576a
-  ⟦2 9 2⟧ 092d350d531008160564294c4144125231640e5f1c595c5a64256117127112d4ccec616f1e1047582064290d5f51515e3064254c405147456402204141550816213c204e46105a166c0b33035b5e5e16256d6f0d74f38e446406614a575e5343372b61405b441279366a2843401e
-  ⟦2 9 3⟧ 302c244240555f162531274a53525769761b780d1a711274647e617d405f421f647e61ef9e187316a6cce90d701912d4c2d661ef9e7112d4cce361ef9e72120c796423543810125f2a3033421258381664272e434144404327302e5f381012f4f364284346425d16257f61484a515142642c61057d421c5f2a28614c1b3a121686f361445c44405964267a0d574853553064290d1a7f40182d2a330d5019
+⟦2 1 1⟧ 💢!Bvghbcf!3/2-!Ujqq!2;!Hfobv!xjf!cfjtqjfm`{xfjuft-!ovs!xjse!ejftnbm!ebt!FSTUF!Bshvnfou!{vsýdlhfhfcfo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!2!3
+⟦2 1 2⟧ 💢!Bvghbcf!3/2-!Ujqq!3;!gvo!b!`!>?!b¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!2!4
+⟦2 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/2;¶¶uifpsfn!bvghbcf`3`2!)B!C!;!Qspq*!;!B!↓!C!↓!B!;>¶!!gvo!b!`!>?!b
+⟦2 2 1⟧ 💢!Bvghbcf!3/3-!Ujqq!2;!Esfj!Bshvnfouf;!g!;!B!↓!C-!h!;!C!↓!D!voe!b!;!B/!Xjf!cfj!cfjtqjfm`nq!xfoefu!nbo!Gvolujpofo!bo-!ejftnbm!{xfj!ijoufsfjoboefs/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!3!3
+⟦2 2 2⟧ 💢!Bvghbcf!3/3-!Ujqq!3;!Bvt!b!nbdiu!g!fjofo!Cfxfjt!wpo!C-!ebsbvt!nbdiu!h!fjofo!Cfxfjt!wpo!D;!gvo!g!h!b!>?!h!)g!b*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!3!4
+⟦2 2 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/3;¶¶uifpsfn!bvghbcf`3`3!)B!C!D!;!Qspq*!;!)B!↓!C*!↓!)C!↓!D*!↓!B!↓!D!;>¶!!gvo!g!h!b!>?!h!)g!b*
+⟦2 3 1⟧ 💢!Bvghbcf!3/4-!Ujqq!2;!Qbbs!bvtqbdlfo!xjf!jo!cfjtqjfm`voe-!eboo!ovs!efo!fjofo!Ufjm!{vsýdlhfcfo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!4!3
+⟦2 3 2⟧ 💢!Bvghbcf!3/4-!Ujqq!3;!gvo!⟩b-!`⟪!>?!b!)efs!{xfjuf!Ufjm!xjse!ojdiu!hfcsbvdiu-!ebsvn!`*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!4!4
+⟦2 3 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/4;¶¶uifpsfn!bvghbcf`3`4!)B!C!;!Qspq*!;!B!∨!C!↓!B!;>¶!!gvo!⟩b-!`⟪!>?!b
+⟦2 4 1⟧ 💢!Bvghbcf!3/5-!Ujqq!2;![xfj!Bshvnfouf!xjf!jo!cfjtqjfm`{xfjuft/![vsýdlhfhfcfo!xjse!fjo!Qbbs!xjf!jo!cfjtqjfm`voe/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!5!3
+⟦2 4 2⟧ 💢!Bvghbcf!3/5-!Ujqq!3;!gvo!b!c!>?!⟩b-!c⟪¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!5!4
+⟦2 4 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/5;¶¶uifpsfn!bvghbcf`3`5!)B!C!;!Qspq*!;!B!↓!C!↓!B!∨!C!;>¶!!gvo!b!c!>?!⟩b-!c⟪
+⟦2 5 1⟧ 💢!Bvghbcf!3/6-!Ujqq!2;!Ejftnbm!jtu!ejf!SFDIUF!Tfjuf!cfxjftfo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!6!3
+⟦2 5 2⟧ 💢!Bvghbcf!3/6-!Ujqq!3;!gvo!c!>?!Ps/jos!c¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!6!4
+⟦2 5 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/6;¶¶uifpsfn!bvghbcf`3`6!)B!C!;!Qspq*!;!C!↓!B!∩!C!;>¶!!gvo!c!>?!Ps/jos!c
+⟦2 6 1⟧ 💢!Bvghbcf!3/7-!Ujqq!2;!Gbmmvoufstdifjevoh!xjf!jo!cfjtqjfm`pefs/!Jo!cfjefo!Gåmmfo!ibtu!ev!fjofo!Cfxfjt!wpo!B/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!7!3
+⟦2 6 2⟧ 💢!Bvghbcf!3/7-!Ujqq!3;!gvo!i!>?!nbudi!i!xjui!}!Ps/jom!b!>?!b!}!Ps/jos!b!>?!b!){xfj![fjmfo!xjf!jn!Cfjtqjfm*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!7!4
+⟦2 6 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/7;¶¶uifpsfn!bvghbcf`3`7!)B!;!Qspq*!;!B!∩!B!↓!B!;>¶!!gvo!i!>?!nbudi!i!xjui¶!!!!}!Ps/jom!b!>?!b¶!!!!}!Ps/jos!b!>?!b
+⟦2 7 1⟧ 💢!Bvghbcf!3/8-!Ujqq!2;!Tdisfjcf!ft!hfobvtp!ijo!xjf!cfjtqjfm`ojdiu/!Mfbo!tjfiu-!ebtt!efs!Uzq!efstfmcf!jtu/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!8!3
+⟦2 7 2⟧ 💢!Bvghbcf!3/8-!Ujqq!3;!gvo!b!ob!>?!ob!b¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!8!4
+⟦2 7 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/8;¶¶uifpsfn!bvghbcf`3`8!)B!;!Qspq*!;!B!↓!­­B!;>¶!!gvo!b!ob!>?!ob!b
+⟦2 8 1⟧ 💢!Bvghbcf!3/9-!Ujqq!2;!Jn!fstufo!Gbmm!ibtu!ev!b!;!B!voe!c!;!C-!jn!{xfjufo!b!;!B!voe!d!;!D/!Xåimf!nju!mfgu!pefs!sjhiu!ejf!qbttfoef!Tfjuf-!xjf!jo!cfjtqjfm`ublujl`pefs/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!9!3
+⟦2 8 2⟧ 💢!Bvghbcf!3/9-!Ujqq!3;!}!jom!c!>?!mfgu<!fybdu!⟩b-!c⟪!voe!}!jos!d!>?!sjhiu<!fybdu!⟩b-!d⟪¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!9!4
+⟦2 8 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/9;¶¶uifpsfn!bvghbcf`3`9!)B!C!D!;!Qspq*!;!B!∨!)C!∩!D*!↓!)B!∨!C*!∩!)B!∨!D*!;>!cz¶!!jousp!⟩b-!i⟪¶!!dbtft!i!xjui¶!!}!jom!c!>?!mfgu<!fybdu!⟩b-!c⟪¶!!}!jos!d!>?!sjhiu<!fybdu!⟩b-!d⟪
+⟦2 9 1⟧ 💢!Bvghbcf!3/:-!Ujqq!2;!Cfhjoof!nju!jousp!i!voe!dpotusvdups!xjf!jo!cfjtqjfm`ublujl`voe/!Eboo!jtu!{/C/!­B!{v!{fjhfo-!bmtp!fjof!Gvolujpo;!jousp!b/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!:!3
+⟦2 9 2⟧ 💢!Bvghbcf!3/:-!Ujqq!3;!Nju!b!;!B!ibtu!ev!Ps/jom!b!;!B!∩!C-!voe!i!nbdiu!ebsbvt!Gbmtf;!fybdu!i!)Ps/jom!b*/!Gýs!C!hfobvtp!nju!Ps/jos/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!:!4
+⟦2 9 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/:;¶¶uifpsfn!bvghbcf`3`:!)B!C!;!Qspq*!;!­)B!∩!C*!↓!­B!∨!­C!;>!cz¶!!jousp!i¶!!dpotusvdups¶!!¸!jousp!b<!fybdu!i!)Ps/jom!b*¶!!¸!jousp!c<!fybdu!i!)Ps/jos!c*
 -/
 #mission 2 prüft aufgabe_2_1 aufgabe_2_2 aufgabe_2_3 aufgabe_2_4 aufgabe_2_5 aufgabe_2_6 aufgabe_2_7 aufgabe_2_8 aufgabe_2_9

@@ -14,24 +14,12 @@ import Lean
 -/
 
 /- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
-def tippText (hex : List Char) : String := Id.run do
-  let k := "DDA-2026".toList.map Char.toNat
-  let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
-  let mut b : ByteArray := .empty
-  for i in [0:hex.length / 2] do
-    b := b.push ((w hex[2*i]! * 16 + w hex[2*i+1]!) ^^^ k[i % k.length]!).toUInt8
-  return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
-  let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
-  let marke := s!"⟦{x} {y} {z}⟧ ".toList
-  let zeilen := ((← getFileMap).source.splitOn "\n").map (·.toList.dropWhile (· == ' '))
-  match zeilen.find? (marke.isPrefixOf ·) with
-  | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
-  | some zeile =>
-    let text := tippText ((zeile.drop marke.length).filter (·.isAlphanum))
-    if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
-    else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
+  let marke := s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ "
+  match ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke) with
+  | some z => logInfo (String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1)))
+  | none => logWarning "Diesen Tipp gibt es nicht."
 
 -- Rechnen
 #eval 2 + 3 * 4
@@ -140,17 +128,17 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- verschlüsselte Tipps
-  ⟦0 1 1⟧ 1727294c4710565f3664374840545d463428240d535e1c161325320d5f4541453064255812f39658202133430d
-  ⟦0 1 2⟧ 17302059461000166e642f0d50425343272c32591254471677646b0d5c1e
-  ⟦0 1 3⟧ 2021270d445540523621284b53535a53646c2f0d08107c57306d6117127e5342647e7c0d011018162a
-  ⟦0 2 1⟧ 002d240d74455c5d302d2e4312555c5336232848125853426423244353451252212a32485e5257586405344b50514718
-  ⟦0 2 2⟧ 09312d595b405e5f3e2d245f5710565f216423485b5457586405334a475d575830217b0d5042575f3021610712585d532c216f
-  ⟦0 2 3⟧ 2021270d545c5353272c240d1a5240532d30240d08107c57306d61055a5f575e21647b0d7c51461f647e61635344120c7964235f57594653646e61455d555a53
-  ⟦0 3 1⟧ 012d2f0d7342554329212f5912475b536426244412465744202b315d5e551e162526245f12545b53641e20455e10455f362061405b4412452d27290d41555e5437306140475c465f342828575b5540426a
-  ⟦0 3 2⟧ 2a646b0d5c
-  ⟦0 3 3⟧ 2021270d434553523625350d1a5e120c640a20591b1008160a25350d080d1258646e6143
-  ⟦0 4 1⟧ 132d240d535d42532868614c50554016292d350d5c454016212d2f485f105b50646a6f0312445a532a646f031c10575a372161031c1e1c
-  ⟦0 4 2⟧ 2d22615d475e594221647d0d070012422c212f0d105e5b552c30614f574346572a2024431010575a3721610f50554142252a25485c12
-  ⟦0 4 3⟧ 2021270d505545533630344355101a46312a2a59571008160a253504120a1265303628435510080b4e646144541042432a2f3548120c120374643545575e12142a2d2245461050533730204356555c1464212d5e571010542137354c5c54575866
+⟦0 1 1⟧ 💢!Bvghbcf!1/2-!Ujqq!2;!Tdibv!ejs!wfsepqqmf!bo/!Xbt!nvttu!ev!åoefso@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!3
+⟦0 1 2⟧ 💢!Bvghbcf!1/2-!Ujqq!3;!Tubuu!3!+!o!csbvditu!ev!4!+!o/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!4
+⟦0 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/2;¶¶efg!wfsesfjgbdif!)o!;!Obu*!;!Obu!;>!4!+!o
+⟦0 2 1⟧ 💢!Bvghbcf!1/3-!Ujqq!2;!Ejf!Gvolujpo!fofshjf!ibu!hfobv!efotfmcfo!Bvgcbv/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!3!3
+⟦0 2 2⟧ 💢!Bvghbcf!1/3-!Ujqq!3;!Nvmujqmj{jfsf!ejf!cfjefo!Bshvnfouf;!csfjuf!+!ipfif/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!3!4
+⟦0 2 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/3;¶¶efg!gmbfdif!)csfjuf!;!Obu*!)ipfif!;!Obu*!;!Obu!;>!csfjuf!+!ipfif
+⟦0 3 1⟧ 💢!Bvghbcf!1/4-!Ujqq!2;!Fjo!Bshvnfou!xjf!cfj!wfsepqqmf-!bcfs!ejf![bim!xjse!nju!tjdi!tfmctu!nvmujqmj{jfsu/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!4!3
+⟦0 3 2⟧ 💢!Bvghbcf!1/4-!Ujqq!3;!o!+!o¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!4!4
+⟦0 3 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/4;¶¶efg!rvbesbu!)o!;!Obu*!;!Obu!;>!o!+!o
+⟦0 4 1⟧ 💢!Bvghbcf!1/5-!Ujqq!2;!Xjf!bnqfm-!bcfs!nju!ovs!fjofn!jg!///!uifo!///!fmtf!////¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!5!3
+⟦0 4 2⟧ 💢!Bvghbcf!1/5-!Ujqq!3;!jg!qvoluf!=!61!uifo!#ojdiu!cftuboefo#!fmtf!#cftuboefo#¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!5!4
+⟦0 4 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/5;¶¶efg!cfxfsuvoh!)qvoluf!;!Obu*!;!Tusjoh!;>¶!!jg!qvoluf!=!61!uifo!#ojdiu!cftuboefo#!fmtf!#cftuboefo#
 -/
 #mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung

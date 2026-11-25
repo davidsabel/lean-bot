@@ -14,24 +14,12 @@ import Lean
 -/
 
 /- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
-def tippText (hex : List Char) : String := Id.run do
-  let k := "DDA-2026".toList.map Char.toNat
-  let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
-  let mut b : ByteArray := .empty
-  for i in [0:hex.length / 2] do
-    b := b.push ((w hex[2*i]! * 16 + w hex[2*i+1]!) ^^^ k[i % k.length]!).toUInt8
-  return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
-  let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
-  let marke := s!"⟦{x} {y} {z}⟧ ".toList
-  let zeilen := ((← getFileMap).source.splitOn "\n").map (·.toList.dropWhile (· == ' '))
-  match zeilen.find? (marke.isPrefixOf ·) with
-  | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
-  | some zeile =>
-    let text := tippText ((zeile.drop marke.length).filter (·.isAlphanum))
-    if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
-    else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
+  let marke := s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ "
+  match ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke) with
+  | some z => logInfo (String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1)))
+  | none => logWarning "Diesen Tipp gibt es nicht."
 
 /- ─────────────────────────────────────────────────────────────
   Schritt 1: Induktion über Zahlen
@@ -154,17 +142,17 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- verschlüsselte Tipps
-  ⟦4 1 1⟧ 0021330d705545532d37614553441251212a20581254575837212d4f575e12773122234c4710455f2164264c47434118640f2e5d5b554053642d294312455c526434205e415512532d2a2443127e535b212a614c5c1e
-  ⟦4 1 2⟧ 0d2a61495742126c212d2d4812435b5b34642e435e49126d6a6a6f70125d474537642b48464a4616312a2648405156536437354c4644124531292c48124346532c212f03
-  ⟦4 1 3⟧ 2021270d475e555336252548120a1278253061cfb4a2127825304b0d124c12066464610d120d0c16744e610d4e105c166f64700d0f0e12432a23245f535457162a646a0d1a02121c642a610612011b
-  ⟦4 2 1⟧ 132d244957421252213632485e5257160531274f534512412d21614f575912512531325e1c
-  ⟦4 2 2⟧ 0d2a61495742126c212d2d4812435b5b34642e435e49126d6a6a6f70124346532c30614757444842643024445e5d575823212f03
-  ⟦4 2 3⟧ 2021270d46555b5a29212f4a575e120c640a205912d2b4a4640a20593810124a6474610d1210120b7a64702712104e162a646a0d03100f08647661071244575f2829244355555c162a
-  ⟦4 3 1⟧ 03212f4c4710455f216431414743775f2a371e4153555c51216a
-  ⟦4 3 2⟧ 0d2a61495742126c212d2d4812435b5b34642e435e49126d6a6a6f70124346532c306147574448426432245f565f42462821615e4651464264342d5841755b58376a
-  ⟦4 3 3⟧ 302c244240555f162825244355556d542821284f46101a4e37647b0d7e594142640a20591b1008166c32245f565f42462821615541191c5a212a26595a100f163c376f41575e55422c647b1012524b3c64642843564551422d2b2f0d4a4312412d30292712104e162a2d2d0d0f0e124422284b0d124c12552b2a320d4a104a45642d370d0f0e38166464610d12435b5b34642e435e49126d322133495d40425a216861615b43461828212f4a46586d552b2a32011259446b
-  ⟦4 4 1⟧ 0d2a255859445b592a648291505540163c37615a5b55125326212f0312795f1602252d4112535d58376429445e564616082d32591c43475b1b272e4341101a522d21617e475d5f5364322e431248120c7e64395e12594142643c61061263475b2921615b5d5e124e376d6f
-  ⟦4 4 2⟧ 02252d4112535d583764390d4a43125f327e615e5b5d42162b2a2d54126b445336202e5d425c571a6408285e461e4143291b22425c436f16312a250d56515c57272c614a40595c5268643644571050532d64264c47434118
-  ⟦4 4 3⟧ 302c244240555f1637312c40576f445336202e5d42555e42646c395e120a127a2d37350d7c51461f647e6105445540522b34314157104a456d6a32585f100f1676646b0d4a431c45312961170f10504f4e6461445c544755302d2e4312484116332d35453810124a642a2841120d0c1636222d2712104e16272b2f5e1248124e3764285b120d0c3c6464610d1210415f293461425c5c4b161f32245f565f424628216d0d7e5941426a3734406d535d5837194b0d12101216642333445c54
+⟦4 1 1⟧ 💢!Bvghbcf!5/2-!Ujqq!2;!Efs!Cfxfjt!ibu!hfobv!efotfmcfo!Bvgcbv!xjf!hbvtt/!Lpqjfsf!jio!voe!qbttf!fjofo!Obnfo!bo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!2!3
+⟦4 1 2⟧ 💢!Bvghbcf!5/2-!Ujqq!3;!Jo!efs![fjmf!tjnq!pomz!\///^!nvtt!kfu{u!vohfsbef!tubuu!tvnnf!tufifo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!2!4
+⟦4 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!5/2;¶¶efg!vohfsbef!;!Obu!↓!Obu¶!!}!1!!!!!>?!1¶!!}!o!,!2!>?!vohfsbef!o!,!)3!+!o!,!2*
+⟦4 2 1⟧ 💢!Bvghbcf!5/3-!Ujqq!2;!Xjfefs!efstfmcf!Bvgcbv!xjf!cfj!hbvtt/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!3!3
+⟦4 2 2⟧ 💢!Bvghbcf!5/3-!Ujqq!3;!Jo!efs![fjmf!tjnq!pomz!\///^!tufiu!kfu{u!ufjmnfohfo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!3!4
+⟦4 2 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!5/3;¶¶efg!ufjmnfohfo!;!Obu!↓!Obu¶!!}!1!!!!!>?!2¶!!}!o!,!2!>?!3!+!ufjmnfohfo!o
+⟦4 3 1⟧ 💢!Bvghbcf!5/4-!Ujqq!2;!Hfobv!xjf!qmvtFjot`mbfohf/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!4!3
+⟦4 3 2⟧ 💢!Bvghbcf!5/4-!Ujqq!3;!Jo!efs![fjmf!tjnq!pomz!\///^!tufiu!kfu{u!wfsepqqmf!tubuu!qmvtFjot/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!4!4
+⟦4 3 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!5/4;¶¶uifpsfn!mbfohf`cmfjcu!)yt!;!Mjtu!Obu*!;!)wfsepqqmf!yt*/mfohui!>!yt/mfohui!;>!cz¶!!joevdujpo!yt!xjui¶!!}!ojm!>?!sgm¶!!}!dpot!y!yt!jw!>?¶!!!!!!tjnq!pomz!\wfsepqqmf-!Mjtu/mfohui`dpot-!jw^
+⟦4 4 1⟧ 💢!Bvghbcf!5/5-!Ujqq!2;!Joevlujpo!ýcfs!yt!xjf!fcfo/!Jn!Gbmm!dpot!ijmgu!Mjtu/tvn`dpot!)ejf!Tvnnf!wpo!y!;;!yt!jtu!y!,!Tvnnf!wpo!yt*/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!5!3
+⟦4 4 2⟧ 💢!Bvghbcf!5/5-!Ujqq!3;!Gbmm!dpot!y!yt!jw;!tjnq!pomz!\wfsepqqmf-!Mjtu/tvn`dpot^!voe!ebobdi!hsjoe-!xjf!cfj!hbvtt/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!5!4
+⟦4 4 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!5/5;¶¶uifpsfn!tvnnf`wfsepqqfmu!)yt!;!Mjtu!Obu*!;!)wfsepqqmf!yt*/tvn!>!3!+!yt/tvn!;>!cz¶!!joevdujpo!yt!xjui¶!!}!ojm!>?!sgm¶!!}!dpot!y!yt!jw!>?¶!!!!!!tjnq!pomz!\wfsepqqmf-!Mjtu/tvn`dpot^¶!!!!!!hsjoe
 -/
 #mission 4 prüft ungerade_formel teilmengen_formel laenge_bleibt summe_verdoppelt

@@ -12,24 +12,12 @@ import Mathlib
 -/
 
 /- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
-def tippText (hex : List Char) : String := Id.run do
-  let k := "DDA-2026".toList.map Char.toNat
-  let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
-  let mut b : ByteArray := .empty
-  for i in [0:hex.length / 2] do
-    b := b.push ((w hex[2*i]! * 16 + w hex[2*i+1]!) ^^^ k[i % k.length]!).toUInt8
-  return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
-  let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
-  let marke := s!"⟦{x} {y} {z}⟧ ".toList
-  let zeilen := ((← getFileMap).source.splitOn "\n").map (·.toList.dropWhile (· == ' '))
-  match zeilen.find? (marke.isPrefixOf ·) with
-  | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
-  | some zeile =>
-    let text := tippText ((zeile.drop marke.length).filter (·.isAlphanum))
-    if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
-    else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
+  let marke := s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ "
+  match ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke) with
+  | some z => logInfo (String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1)))
+  | none => logWarning "Diesen Tipp gibt es nicht."
 
 -- Was sagt ein Satz? #check zeigt die Aussage (den Typ):
 #check Nat.exists_infinite_primes   -- Euklid: Über jeder Zahl liegt eine Primzahl
@@ -119,8 +107,8 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- verschlüsselte Tipps
-  ⟦5 1 1⟧ 1727294c4710565f366423485b43425f21281e186d0112572a7e61695d4246163e21284a4610575f2a2161485b5e485f23216179535b465f2f686149534341167574700d57595c53641433445f4a535e2864285e461e
-  ⟦5 1 2⟧ 2a2b33406d5e475b
-  ⟦5 1 3⟧ 302c244240555f162621285e4259575a1b711e1e120a127825306f7d40595f53646c730d6c10051669647004120a0f16263d4b0d125e5d44291b2f585f
+⟦5 1 1⟧ 💢!Bvghbcf!6/2-!Ujqq!2;!Tdibv!ejs!cfjtqjfm`6`2!bo;!Epsu!{fjhu!fjof!fjo{jhf!Ublujl-!ebtt!212!fjof!Qsjn{bim!jtu/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!3
+⟦5 1 2⟧ 💢!Bvghbcf!6/2-!Ujqq!3;!opsn`ovn¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!4
+⟦5 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!6/2;¶¶uifpsfn!cfjtqjfm`6`4!;!Obu/Qsjnf!)3!_!8!.!2*!;>!cz¶!!opsn`ovn
 -/
 #mission 5 prüft beispiel_5_3
