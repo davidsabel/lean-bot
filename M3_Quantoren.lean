@@ -17,40 +17,40 @@ import Lean
   Schritt 1: Es gibt ... (Zeuge angeben)
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: Zeuge 7, den Rest rechnet Lean aus.
+-- Beispiel: Zeuge 7, den Rest rechnet Lean aus.
 theorem beispiel_existiert : ∃ n : Nat, n * n = 49 := ⟨7, rfl⟩
 
--- ✍️ NACHMACHEN (Aufgabe 3.1): Es gibt ein n mit n + n = 26.
+-- ✏️ Aufgabe 3.1: Es gibt ein n mit n + n = 26.
 theorem aufgabe_3_1 : ∃ n : Nat, n + n = 26 := sorry
 
 -- Eine eigene Aussageform: n ist gerade, wenn n = 2 * k für ein k.
 def gerade (n : Nat) : Prop := ∃ k, n = 2 * k
 
--- 👀 VORMACHEN
+-- Beispiel
 theorem beispiel_gerade : gerade 10 := ⟨5, rfl⟩
 
--- ✍️ NACHMACHEN (Aufgabe 3.2): 42 ist gerade.
+-- ✏️ Aufgabe 3.2: 42 ist gerade.
 theorem aufgabe_3_2 : gerade 42 := sorry
 
 /- ─────────────────────────────────────────────────────────────
   Schritt 2: Für alle ... (eine Funktion)
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: 4n ist immer gerade. Für jedes n ist 2n der Zeuge, omega rechnet nach.
+-- Beispiel: 4n ist immer gerade. Für jedes n ist 2n der Zeuge, omega rechnet nach.
 theorem beispiel_alle : ∀ n : Nat, gerade (4 * n) :=
   fun n => ⟨2 * n, by omega⟩
 
--- ✍️ NACHMACHEN (Aufgabe 3.3): 2n ist immer gerade.
+-- ✏️ Aufgabe 3.3: 2n ist immer gerade.
 theorem aufgabe_3_3 : ∀ n : Nat, gerade (2 * n) :=
   sorry
 
--- 👀 VORMACHEN: Ist n gerade, dann auch n + 4. Mit Taktiken:
+-- Beispiel: Ist n gerade, dann auch n + 4. Mit Taktiken:
 theorem beispiel_plus4 : ∀ n : Nat, gerade n → gerade (n + 4) := by
   intro n h
   obtain ⟨k, hk⟩ := h        -- h auspacken: hk : n = 2 * k
   exact ⟨k + 2, by omega⟩    -- n + 4 = 2 * (k + 2)
 
--- ✍️ NACHMACHEN (Aufgabe 3.4): Ist n gerade, dann auch n + 2.
+-- ✏️ Aufgabe 3.4: Ist n gerade, dann auch n + 2.
 theorem aufgabe_3_4 : ∀ n : Nat, gerade n → gerade (n + 2) := by
   sorry
 
@@ -62,17 +62,17 @@ theorem aufgabe_3_4 : ∀ n : Nat, gerade n → gerade (n + 2) := by
   aber nicht für alle n. Einen ∀-Satz widerlegt man durch EIN Gegenbeispiel.
 -/
 
--- 👀 VORMACHEN: Widerlege "Jede natürliche Zahl ist kleiner als 10".
+-- Beispiel: Widerlege "Jede natürliche Zahl ist kleiner als 10".
 theorem beispiel_gegen : ¬ (∀ n : Nat, n < 10) := by
   intro h            -- angenommen, es gilt für alle n ...
   have h10 := h 10   -- ... dann auch für 10: h10 : 10 < 10
   omega              -- Widerspruch
 
--- ✍️ NACHMACHEN (Aufgabe 3.5): Widerlege "Jede natürliche Zahl ist kleiner als 100".
+-- ✏️ Aufgabe 3.5: Widerlege "Jede natürliche Zahl ist kleiner als 100".
 theorem aufgabe_3_5 : ¬ (∀ n : Nat, n < 100) := by
   sorry
 
--- 🚀 SELBSTMACHEN (Aufgabe 3.6): Widerlege "Jede natürliche Zahl ist gerade".
+-- ✏️ Aufgabe 3.6: Widerlege "Jede natürliche Zahl ist gerade".
 theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
   sorry
 

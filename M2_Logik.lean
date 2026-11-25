@@ -20,24 +20,24 @@ import Lean
   Schritt 1: Implikation = Funktion
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: A → A. Die Identitätsfunktion ist ein Beweis!
+-- Beispiel: A → A. Die Identitätsfunktion ist ein Beweis!
 theorem beispiel_id (A : Prop) : A → A :=
   fun a => a
 
--- 👀 VORMACHEN: A → B → B. Eine Funktion mit zwei Argumenten, die das zweite zurückgibt.
+-- Beispiel: A → B → B. Eine Funktion mit zwei Argumenten, die das zweite zurückgibt.
 -- `_` heißt: Dieses Argument wird nicht gebraucht.
 theorem beispiel_zweites (A B : Prop) : A → B → B :=
   fun _ b => b
 
--- ✍️ NACHMACHEN (Aufgabe 2.1): A → B → A
+-- ✏️ Aufgabe 2.1: A → B → A
 theorem aufgabe_2_1 (A B : Prop) : A → B → A :=
   sorry
 
--- 👀 VORMACHEN: Modus ponens. Eine Funktion f : A → B auf a : A anwenden.
+-- Beispiel: Modus ponens. Eine Funktion f : A → B auf a : A anwenden.
 theorem beispiel_mp (A B : Prop) : (A → B) → A → B :=
   fun f a => f a
 
--- ✍️ NACHMACHEN (Aufgabe 2.2): Kettenschluss
+-- ✏️ Aufgabe 2.2: Kettenschluss
 theorem aufgabe_2_2 (A B C : Prop) : (A → B) → (B → C) → A → C :=
   sorry
 
@@ -45,15 +45,15 @@ theorem aufgabe_2_2 (A B C : Prop) : (A → B) → (B → C) → A → C :=
   Schritt 2: Und = Paar
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: A ∧ B → B ∧ A. Paar auspacken und vertauscht wieder einpacken.
+-- Beispiel: A ∧ B → B ∧ A. Paar auspacken und vertauscht wieder einpacken.
 theorem beispiel_und (A B : Prop) : A ∧ B → B ∧ A :=
   fun ⟨a, b⟩ => ⟨b, a⟩
 
--- ✍️ NACHMACHEN (Aufgabe 2.3): A ∧ B → A
+-- ✏️ Aufgabe 2.3: A ∧ B → A
 theorem aufgabe_2_3 (A B : Prop) : A ∧ B → A :=
   sorry
 
--- 🚀 SELBSTMACHEN (Aufgabe 2.4): A → B → A ∧ B
+-- ✏️ Aufgabe 2.4: A → B → A ∧ B
 theorem aufgabe_2_4 (A B : Prop) : A → B → A ∧ B :=
   sorry
 
@@ -61,21 +61,21 @@ theorem aufgabe_2_4 (A B : Prop) : A → B → A ∧ B :=
   Schritt 3: Oder = einer von zwei Fällen
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: A → A ∨ B. Man wählt die linke Seite.
+-- Beispiel: A → A ∨ B. Man wählt die linke Seite.
 theorem beispiel_links (A B : Prop) : A → A ∨ B :=
   fun a => Or.inl a
 
--- ✍️ NACHMACHEN (Aufgabe 2.5): B → A ∨ B
+-- ✏️ Aufgabe 2.5: B → A ∨ B
 theorem aufgabe_2_5 (A B : Prop) : B → A ∨ B :=
   sorry
 
--- 👀 VORMACHEN: A ∨ B → B ∨ A. Fallunterscheidung mit match.
+-- Beispiel: A ∨ B → B ∨ A. Fallunterscheidung mit match.
 theorem beispiel_oder (A B : Prop) : A ∨ B → B ∨ A :=
   fun h => match h with
     | Or.inl a => Or.inr a
     | Or.inr b => Or.inl b
 
--- 🚀 SELBSTMACHEN (Aufgabe 2.6): A ∨ A → A
+-- ✏️ Aufgabe 2.6: A ∨ A → A
 theorem aufgabe_2_6 (A : Prop) : A ∨ A → A :=
   sorry
 
@@ -83,11 +83,11 @@ theorem aufgabe_2_6 (A : Prop) : A ∨ A → A :=
   Schritt 4: Nicht = Funktion nach False
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: A → ¬A → False. ¬A ist eine Funktion A → False, man wendet sie auf a an.
+-- Beispiel: A → ¬A → False. ¬A ist eine Funktion A → False, man wendet sie auf a an.
 theorem beispiel_nicht (A : Prop) : A → ¬A → False :=
   fun a na => na a
 
--- ✍️ NACHMACHEN (Aufgabe 2.7): A → ¬¬A
+-- ✏️ Aufgabe 2.7: A → ¬¬A
 -- ¬¬A bedeutet ¬A → False. Also ist das wieder eine Funktion mit zwei Argumenten.
 theorem aufgabe_2_7 (A : Prop) : A → ¬¬A :=
   sorry
@@ -106,28 +106,28 @@ theorem aufgabe_2_7 (A : Prop) : A → ¬¬A :=
     left / right   Ziel A ∨ B: zeige A bzw. B
 -/
 
--- 👀 VORMACHEN: A ∧ B → B ∧ A mit Taktiken
+-- Beispiel: A ∧ B → B ∧ A mit Taktiken
 theorem beispiel_taktik_und (A B : Prop) : A ∧ B → B ∧ A := by
   intro h
   constructor
   · exact h.2
   · exact h.1
 
--- 👀 VORMACHEN: A ∨ B → B ∨ A mit Taktiken
+-- Beispiel: A ∨ B → B ∨ A mit Taktiken
 theorem beispiel_taktik_oder (A B : Prop) : A ∨ B → B ∨ A := by
   intro h
   cases h with
   | inl a => right; exact a
   | inr b => left; exact b
 
--- ✍️ NACHMACHEN (Aufgabe 2.8): Distributivgesetz. Das Gerüst ist schon da.
+-- ✏️ Aufgabe 2.8: Distributivgesetz. Das Gerüst ist schon da.
 theorem aufgabe_2_8 (A B C : Prop) : A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C) := by
   intro ⟨a, h⟩
   cases h with
   | inl b => sorry
   | inr c => sorry
 
--- 🚀 SELBSTMACHEN (Aufgabe 2.9): De Morgan, eine Richtung
+-- ✏️ Aufgabe 2.9: De Morgan, eine Richtung
 theorem aufgabe_2_9 (A B : Prop) : ¬(A ∨ B) → ¬A ∧ ¬B := by
   sorry
 

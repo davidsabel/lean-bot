@@ -8,11 +8,8 @@ import Lean
   Lean ist eine Programmiersprache. Rechts im Fenster siehst du,
   was Lean zu jeder Zeile sagt. Klicke auf eine Zeile mit #eval.
 
-  So ist jede Mission aufgebaut:
-    👀 VORMACHEN    Ein fertiges Beispiel. Lies es und klicke es an.
-    ✍️ NACHMACHEN   Fast dasselbe noch einmal. Ersetze `sorry` nach dem Vorbild.
-    🚀 SELBSTMACHEN Ein kleiner Schritt weiter, diesmal ohne Vorlage.
-  Ersetze jedes `sorry`. Lean zeigt dir sofort, ob es passt.
+  In jeder Mission findest du Beispiele und Aufgaben (✏️). Ersetze in den
+  Aufgaben jedes `sorry`. Lean zeigt dir sofort, ob es passt.
 -/
 
 -- Rechnen
@@ -23,7 +20,7 @@ import Lean
   Schritt 1: eine eigene Funktion
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: Ein Droide verdoppelt seine Energie.
+-- Beispiel: Ein Droide verdoppelt seine Energie.
 def verdopple (n : Nat) : Nat := 2 * n
 
 #eval verdopple 21     -- 42
@@ -32,7 +29,7 @@ def verdopple (n : Nat) : Nat := 2 * n
 -- `rfl` heißt: "einfach ausrechnen, dann sieht man es".
 theorem test_verdopple : verdopple 21 = 42 := rfl
 
--- ✍️ NACHMACHEN (Aufgabe 0.1): Ein Droide verdreifacht seine Energie.
+-- ✏️ Aufgabe 0.1: Ein Droide verdreifacht seine Energie.
 def verdreifache (n : Nat) : Nat := sorry
 
 #eval verdreifache 5   -- soll 15 ergeben
@@ -42,17 +39,17 @@ theorem test_verdreifache : verdreifache 5 = 15 := rfl
   Schritt 2: Funktionen mit zwei Argumenten
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN
+-- Beispiel
 def energie (kerne : Nat) (proKern : Nat) : Nat := kerne * proKern
 
 #eval energie 5 12     -- 60
 
--- ✍️ NACHMACHEN (Aufgabe 0.2): die Fläche eines Rechtecks
+-- ✏️ Aufgabe 0.2: die Fläche eines Rechtecks
 def flaeche (breite : Nat) (hoehe : Nat) : Nat := sorry
 
 theorem test_flaeche : flaeche 3 4 = 12 := rfl
 
--- 🚀 SELBSTMACHEN (Aufgabe 0.3): Diesmal schreibst du die ganze Zeile nach `:=` selbst.
+-- ✏️ Aufgabe 0.3: Diesmal schreibst du die ganze Zeile nach `:=` selbst.
 -- `quadrat n` soll n * n berechnen.
 def quadrat (n : Nat) : Nat := sorry
 
@@ -63,13 +60,13 @@ theorem test_quadrat : quadrat 0 = 0 ∧ quadrat 3 = 9 ∧ quadrat 7 = 49 := ⟨
   Schritt 3: Fallunterscheidung
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: Ladestand als Ampel
+-- Beispiel: Ladestand als Ampel
 def ampel (n : Nat) : String :=
   if n < 30 then "rot" else if n < 70 then "gelb" else "grün"
 
 #eval ampel 42         -- "gelb"
 
--- ✍️ NACHMACHEN (Aufgabe 0.4): Ab 50 Punkten ist ein Test bestanden.
+-- ✏️ Aufgabe 0.4: Ab 50 Punkten ist ein Test bestanden.
 def bewertung (punkte : Nat) : String :=
   sorry
 

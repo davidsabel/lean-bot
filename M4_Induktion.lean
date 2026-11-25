@@ -21,7 +21,7 @@ def summe : Nat → Nat
   | 0     => 0
   | n + 1 => summe n + (n + 1)
 
--- 👀 VORMACHEN: die Gaußsche Formel für ALLE n, mit der Taktik `induction`.
+-- Beispiel: die Gaußsche Formel für ALLE n, mit der Taktik `induction`.
 -- Klicke auf die Zeilen und schau rechts, was jeweils zu zeigen ist.
 theorem gauss (n : Nat) : 2 * summe n = n * (n + 1) := by
   induction n with
@@ -30,7 +30,7 @@ theorem gauss (n : Nat) : 2 * summe n = n * (n + 1) := by
       simp only [summe]         -- summe (n + 1) durch seine Definition ersetzen
       grind                     -- den Rest (Rechnen mit iv) erledigt grind
 
--- ✍️ NACHMACHEN (Aufgabe 4.1): die Summe der ersten n ungeraden Zahlen 1 + 3 + 5 + ...
+-- ✏️ Aufgabe 4.1: die Summe der ersten n ungeraden Zahlen 1 + 3 + 5 + ...
 def ungerade : Nat → Nat
   | 0     => 0
   | n + 1 => ungerade n + (2 * n + 1)
@@ -40,7 +40,7 @@ def ungerade : Nat → Nat
 theorem ungerade_formel (n : Nat) : ungerade n = n * n := by
   sorry
 
--- ✍️ NACHMACHEN (Aufgabe 4.2): `teilmengen` aus Mission 1. Zeige teilmengen n = 2 ^ n.
+-- ✏️ Aufgabe 4.2: `teilmengen` aus Mission 1. Zeige teilmengen n = 2 ^ n.
 def teilmengen : Nat → Nat
   | 0     => 1
   | n + 1 => 2 * teilmengen n
@@ -64,7 +64,7 @@ def plusEins : List Nat → List Nat
 
 #eval plusEins [1, 2, 3]   -- [2, 3, 4]
 
--- 👀 VORMACHEN: plusEins ändert die Länge der Liste nicht.
+-- Beispiel: plusEins ändert die Länge der Liste nicht.
 theorem plusEins_laenge (xs : List Nat) : (plusEins xs).length = xs.length := by
   induction xs with
   | nil => rfl
@@ -78,11 +78,11 @@ def verdopple : List Nat → List Nat
 
 #eval verdopple [1, 2, 3]   -- [2, 4, 6]
 
--- ✍️ NACHMACHEN (Aufgabe 4.3): verdopple ändert die Länge der Liste nicht.
+-- ✏️ Aufgabe 4.3: verdopple ändert die Länge der Liste nicht.
 theorem laenge_bleibt (xs : List Nat) : (verdopple xs).length = xs.length := by
   sorry
 
--- 🚀 SELBSTMACHEN (Aufgabe 4.4): Die Summe der verdoppelten Liste ist doppelt so groß.
+-- ✏️ Aufgabe 4.4: Die Summe der verdoppelten Liste ist doppelt so groß.
 theorem summe_verdoppelt (xs : List Nat) : (verdopple xs).sum = 2 * xs.sum := by
   sorry
 

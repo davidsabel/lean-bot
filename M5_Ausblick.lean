@@ -14,7 +14,7 @@ import Mathlib
 #check Nat.exists_infinite_primes   -- Euklid: Über jeder Zahl liegt eine Primzahl
 
 -- Mathlib-Taktiken rechnen für uns:
--- 👀 VORMACHEN
+-- Beispiel
 theorem beispiel_5_1 : Nat.Prime 101 := by norm_num
 
 -- Den Satz von Euklid benutzen: Es gibt eine Primzahl größer als 1000.
@@ -39,7 +39,7 @@ theorem euklid (n : Nat) : ∃ p, n ≤ p ∧ Nat.Prime p := by
   have h3 : p ∣ 1 := (Nat.dvd_add_right h1).mp h2
   exact Nat.Prime.one_lt prim |>.ne' (Nat.dvd_one.mp h3)
 
--- ✍️ NACHMACHEN (Aufgabe 5.1): 2^7 - 1 = 127 ist eine Primzahl (eine Mersenne-Primzahl).
+-- ✏️ Aufgabe 5.1: 2^7 - 1 = 127 ist eine Primzahl (eine Mersenne-Primzahl).
 theorem beispiel_5_3 : Nat.Prime (2 ^ 7 - 1) := by
   sorry
 

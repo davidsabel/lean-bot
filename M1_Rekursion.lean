@@ -17,7 +17,7 @@ import Lean
   Schritt 1: Summen
 ──────────────────────────────────────────────────────────────── -/
 
--- 👀 VORMACHEN: summe n = 0 + 1 + 2 + ... + n
+-- Beispiel: summe n = 0 + 1 + 2 + ... + n
 def summe : Nat → Nat
   | 0     => 0
   | n + 1 => summe n + (n + 1)
@@ -28,7 +28,7 @@ def summe : Nat → Nat
 -- Tests sind kleine Beweise, Lean rechnet sie aus:
 theorem test_summe : summe 4 = 10 := rfl
 
--- ✍️ NACHMACHEN (Aufgabe 1.1): Summe der Quadrate 0 + 1 + 4 + 9 + ... + n*n
+-- ✏️ Aufgabe 1.1: Summe der Quadrate 0 + 1 + 4 + 9 + ... + n*n
 def summeQuadrate : Nat → Nat
   | 0     => 0
   | n + 1 => sorry
@@ -40,7 +40,7 @@ theorem test_summeQuadrate : summeQuadrate 3 = 14 := rfl
   Schritt 2: Produkte
 ──────────────────────────────────────────────────────────────── -/
 
--- ✍️ NACHMACHEN (Aufgabe 1.2): Fakultät, fak n = 1 * 2 * ... * n
+-- ✏️ Aufgabe 1.2: Fakultät, fak n = 1 * 2 * ... * n
 -- Wie `summe`, nur wird multipliziert statt addiert.
 -- Achtung beim Startwert: Ein leeres Produkt ist 1, nicht 0.
 def fak : Nat → Nat
@@ -54,7 +54,7 @@ theorem test_fak : fak 5 = 120 := rfl
   Schritt 3: selbst eine Rekursion finden
 ──────────────────────────────────────────────────────────────── -/
 
--- 🚀 SELBSTMACHEN (Aufgabe 1.3): Anzahl der Teilmengen
+-- ✏️ Aufgabe 1.3: Anzahl der Teilmengen
 -- Eine Menge mit n Elementen hat 2^n Teilmengen.
 -- Programmiere `teilmengen n` rekursiv OHNE ^ zu benutzen.
 def teilmengen : Nat → Nat
