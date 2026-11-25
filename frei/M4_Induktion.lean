@@ -30,23 +30,30 @@ import Lean
 open Lean Elab Command in
 def daten (marke : String) : CommandElabM (Option String) := do
   let z? := ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke)
-  return z?.map fun z => String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1))
+  return z?.map fun z => String.ofList ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1))
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
   match ← daten s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ " with
   | some t => logInfo t
   | none => logWarning "Diesen Tipp gibt es nicht."
+@[widget_module] def linkWidget : Lean.Widget.Module where
+  javascript := "import * as React from 'react'; export default (p) => React.createElement('a', {href: p.url, target: '_blank'}, p.text)"
 open Lean Elab Command in
 elab "#mission " n:num " prüft " ids:ident* : command => do
   let some d ← daten s!"⟦{n.getNat}⟧ " | logWarning "Prüfdaten fehlen."
-  let [soll, erfolg] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
+  let teile : List String := d.splitOn "|"
+  let (soll, erfolg) := (teile.getD 0 "", teile.getD 1 "")
   if ids.toList.map (·.getId.toString) != soll.splitOn " " then
     logWarning "⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."; return
   let mut offen := #[]
   for id in ids do
     if (← getEnv).find? id.getId |>.isNone then offen := offen.push s!"{id.getId} (fehlt)"
     else if (← Lean.collectAxioms id.getId).contains ``sorryAx then offen := offen.push s!"{id.getId}"
-  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
+  if offen.isEmpty then
+    logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
+    if let some url := teile[2]? then
+      let props := Json.mkObj [("url", toJson url), ("text", toJson "▶ Hier klicken: weiter zur nächsten Mission")]
+      logInfo (.ofWidget { id := ``linkWidget, javascriptHash := linkWidget.javascriptHash, props := pure props } m!"{url}")
   else logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- ═════════════════════════════════════════════════════════════
@@ -133,13 +140,11 @@ theorem summe_verdoppelt (xs : List Nat) : (verdopple xs).sum = 2 * xs.sum := by
 
 -- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann, wie es weitergeht.
 #mission 4 prüft ungerade_formel teilmengen_formel laenge_bleibt summe_verdoppelt
--- Geschafft? Weiter zu Mission 5 (Strg+Klick):
--- https://live.lean-lang.org/#url=https%3A%2F%2Fgithub.com%2Fdavidsabel%2Flean-bot%2Fblob%2Fmain%2Ffrei%2FM5_Ausblick.lean
 
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦4⟧ vohfsbef`gpsnfm!ufjmnfohfo`gpsnfm!mbfohf`cmfjcu!tvnnf`wfsepqqfmu}Xfjufs!hfiu!ft!nju!Njttjpo!6;!Efs!Mjol!tufiu!jn!Fejups!ejsflu!voufs!efs![fjmf!$njttjpo!)Tush,Lmjdl*/
+⟦4⟧ vohfsbef`gpsnfm!ufjmnfohfo`gpsnfm!mbfohf`cmfjcu!tvnnf`wfsepqqfmu}Ebnju!jtu!Njttjpo!6!gsfjhftdibmufu/}iuuqt;00mjwf/mfbo.mboh/psh0$vsm>iuuqt&4B&3G&3Ghjuivc/dpn&3Gebwjetbcfm&3Gmfbo.cpu&3Gcmpc&3Gnbjo&3Ggsfj&3GN6`Bvtcmjdl/mfbo
 ⟦4 1 1⟧ 💢!Bvghbcf!5/2-!Ujqq!2;!Efs!Cfxfjt!ibu!hfobv!efotfmcfo!Bvgcbv!xjf!hbvtt/!Lpqjfsf!jio!voe!qbttf!fjofo!Obnfo!bo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!2!3
 ⟦4 1 2⟧ 💢!Bvghbcf!5/2-!Ujqq!3;!Jo!efs![fjmf!tjnq!pomz!\///^!nvtt!kfu{u!vohfsbef!tubuu!tvnnf!tufifo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!5!2!4
 ⟦4 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!5/2;¶¶efg!vohfsbef!;!Obu!↓!Obu¶!!}!1!!!!!>?!1¶!!}!o!,!2!>?!vohfsbef!o!,!)3!+!o!,!2*

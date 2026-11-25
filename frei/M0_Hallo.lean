@@ -54,23 +54,30 @@ import Lean
 open Lean Elab Command in
 def daten (marke : String) : CommandElabM (Option String) := do
   let z? := ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke)
-  return z?.map fun z => String.mk ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1))
+  return z?.map fun z => String.ofList ((z.toList.drop marke.length).map fun c => if c == '¶' then '\n' else Char.ofNat (c.toNat - 1))
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
   match ← daten s!"⟦{m.getNat} {a.getNat} {(s.map (·.getNat)).getD 1}⟧ " with
   | some t => logInfo t
   | none => logWarning "Diesen Tipp gibt es nicht."
+@[widget_module] def linkWidget : Lean.Widget.Module where
+  javascript := "import * as React from 'react'; export default (p) => React.createElement('a', {href: p.url, target: '_blank'}, p.text)"
 open Lean Elab Command in
 elab "#mission " n:num " prüft " ids:ident* : command => do
   let some d ← daten s!"⟦{n.getNat}⟧ " | logWarning "Prüfdaten fehlen."
-  let [soll, erfolg] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
+  let teile : List String := d.splitOn "|"
+  let (soll, erfolg) := (teile.getD 0 "", teile.getD 1 "")
   if ids.toList.map (·.getId.toString) != soll.splitOn " " then
     logWarning "⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."; return
   let mut offen := #[]
   for id in ids do
     if (← getEnv).find? id.getId |>.isNone then offen := offen.push s!"{id.getId} (fehlt)"
     else if (← Lean.collectAxioms id.getId).contains ``sorryAx then offen := offen.push s!"{id.getId}"
-  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
+  if offen.isEmpty then
+    logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
+    if let some url := teile[2]? then
+      let props := Json.mkObj [("url", toJson url), ("text", toJson "▶ Hier klicken: weiter zur nächsten Mission")]
+      logInfo (.ofWidget { id := ``linkWidget, javascriptHash := linkWidget.javascriptHash, props := pure props } m!"{url}")
   else logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- ═════════════════════════════════════════════════════════════
@@ -143,13 +150,11 @@ theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "be
 
 -- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann, wie es weitergeht.
 #mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung
--- Geschafft? Weiter zu Mission 1 (Strg+Klick):
--- https://live.lean-lang.org/#url=https%3A%2F%2Fgithub.com%2Fdavidsabel%2Flean-bot%2Fblob%2Fmain%2Ffrei%2FM1_Rekursion.lean
 
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}Xfjufs!hfiu!ft!nju!Njttjpo!2;!Efs!Mjol!tufiu!jn!Fejups!ejsflu!voufs!efs![fjmf!$njttjpo!)Tush,Lmjdl*/
+⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}Ebnju!jtu!Njttjpo!2!gsfjhftdibmufu/}iuuqt;00mjwf/mfbo.mboh/psh0$vsm>iuuqt&4B&3G&3Ghjuivc/dpn&3Gebwjetbcfm&3Gmfbo.cpu&3Gcmpc&3Gnbjo&3Ggsfj&3GN2`Sflvstjpo/mfbo
 ⟦0 1 1⟧ 💢!Bvghbcf!1/2-!Ujqq!2;!Tdibv!ejs!wfsepqqmf!bo/!Xbt!nvttu!ev!åoefso@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!3
 ⟦0 1 2⟧ 💢!Bvghbcf!1/2-!Ujqq!3;!Tubuu!3!+!o!csbvditu!ev!4!+!o/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!4
 ⟦0 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/2;¶¶efg!wfsesfjgbdif!)o!;!Obu*!;!Obu!;>!4!+!o
