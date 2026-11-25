@@ -13,81 +13,22 @@ import Lean
   Aufgaben jedes `sorry`. Lean zeigt dir sofort, ob es passt.
 -/
 
-/- ⚙️ Werkzeuge der Discrete Droid Academy: Tipps und Prüfstation (bitte nicht ändern).
-   Weiter unten geht es los! -/
-def tippHex (c : Char) : Nat :=
-  if c.isDigit then c.toNat - '0'.toNat else c.toNat - 'a'.toNat + 10
+/- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
 def tippText (hex : String) : String := Id.run do
-  let k := "DDA-2026".toUTF8
-  let cs := hex.toList.toArray
-  let mut b : ByteArray := .empty
-  for i in [0:cs.size / 2] do
-    b := b.push ((tippHex cs[2*i]! * 16 + tippHex cs[2*i+1]!) ^^^ (k.get! (i % k.size)).toNat).toUInt8
+  let k := "DDA-2026".toUTF8; let cs := hex.trim.toList.toArray; let mut b : ByteArray := .empty
+  let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
+  for i in [0:cs.size / 2] do b := b.push ((w cs[2*i]! * 16 + w cs[2*i+1]!) ^^^ (k.get! (i % k.size)).toNat).toUInt8
   return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
-  let stufe := (s.map (·.getNat)).getD 1
-  let tabelle : List (Nat × Nat × Nat × String) := [
-    (0, 1, 1, "1727294c4710565f3664374840545d463428240d535e1c161325320d5f4541453064255812f39658202133430d"),
-    (0, 1, 2, "17302059461000166e642f0d50425343272c32591254471677646b0d5c1e"),
-    (0, 1, 3, "2021270d445540523621284b53535a53646c2f0d08107c57306d6117127e5342647e7c0d011018162a"),
-    (0, 2, 1, "002d240d74455c5d302d2e4312555c5336232848125853426423244353451252212a32485e5257586405344b50514718"),
-    (0, 2, 2, "09312d595b405e5f3e2d245f5710565f216423485b5457586405334a475d575830217b0d5042575f3021610712585d532c216f"),
-    (0, 2, 3, "2021270d545c5353272c240d1a5240532d30240d08107c57306d61055a5f575e21647b0d7c51461f647e61635344120c7964235f57594653646e61455d555a53"),
-    (0, 3, 1, "012d2f0d7342554329212f5912475b536426244412465744202b315d5e551e162526245f12545b53641e20455e10455f362061405b4412452d27290d41555e5437306140475c465f342828575b5540426a"),
-    (0, 3, 2, "2a646b0d5c"),
-    (0, 3, 3, "2021270d434553523625350d1a5e120c640a20591b1008160a25350d080d1258646e6143"),
-    (0, 4, 1, "132d240d535d42532868614c50554016292d350d5c454016212d2f485f105b50646a6f0312445a532a646f031c10575a372161031c1e1c"),
-    (0, 4, 2, "2d22615d475e594221647d0d070012422c212f0d105e5b552c30614f574346572a2024431010575a3721610f50554142252a25485c12"),
-    (0, 4, 3, "2021270d505545533630344355101a46312a2a59571008160a253504120a1265303628435510080b4e646144541042432a2f3548120c120374643545575e12142a2d2245461050533730204356555c1464212d5e571010542137354c5c54575866")
-  ]
-  let nr := s!"{m.getNat}.{a.getNat}"
-  match tabelle.find? (fun (x, y, z, _) => x == m.getNat && y == a.getNat && z == stufe) with
-  | some (_, _, z, hex) =>
-    if z == 3 then
-      logInfo m!"🔑 Lösung zu Aufgabe {nr}:\n\n{tippText hex}"
-    else
-      logInfo m!"💡 Aufgabe {nr}, Tipp {z}: {tippText hex}\n\nNoch ein Schritt weiter: #tipp {m.getNat} {a.getNat} {z + 1}"
-  | none => logWarning m!"Zu Aufgabe {nr} gibt es keinen Tipp {stufe}. Probiere z.B. #tipp {m.getNat} 1"
-open Lean Elab Command in
-elab "#mission " n:num " prüft " ids:ident* : command => do
-  -- die letzte Zeile darf nicht verändert werden
-  let soll : List String := match n.getNat with
-    | 0 => ["test_verdreifache", "test_flaeche", "test_quadrat", "test_bewertung"]
-    | 1 => ["test_summeQuadrate", "test_fak", "test_teilmengen"]
-    | 2 => ["aufgabe_2_1", "aufgabe_2_2", "aufgabe_2_3", "aufgabe_2_4", "aufgabe_2_5", "aufgabe_2_6", "aufgabe_2_7", "aufgabe_2_8", "aufgabe_2_9"]
-    | 3 => ["aufgabe_3_1", "aufgabe_3_2", "aufgabe_3_3", "aufgabe_3_4", "aufgabe_3_5", "aufgabe_3_6"]
-    | 4 => ["ungerade_formel", "teilmengen_formel", "laenge_bleibt", "summe_verdoppelt"]
-    | 5 => ["beispiel_5_3"]
-    | _ => []
-  if ids.toList.map (·.getId.toString) != soll then
-    logWarning m!"⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."
-    return
-  let mut offen : Array String := #[]
-  for id in ids do
-    let name := id.getId
-    if (← getEnv).find? name |>.isNone then
-      offen := offen.push s!"{name} (fehlt)"
-    else
-      let ax ← Lean.collectAxioms name
-      if ax.contains ``sorryAx then offen := offen.push s!"{name}"
-  if offen.isEmpty then
-    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
-    let s := "DDA-2026|" ++ (match n.getNat with
-      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
-      | 1 => "1|beispiel_1_3, beispiel_1_4"
-      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
-      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
-      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
-      | k => s!"{k}|beispiel_5_3")
-    let mut h : UInt64 := 14695981039346656037
-    for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
-    let abc := "ACEFHJKLMNPRTUVWXY3479".toList
-    let mut code := ""
-    for i in [0:5] do code := code.push (abc[((h >>> (UInt64.ofNat (i*11))) % 22).toNat]!)
-    logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
-  else
-    logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
+  let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
+  let marke := s!"⟦{x} {y} {z}⟧"
+  match ((← getFileMap).source.splitOn "\n").find? (·.trimLeft.startsWith marke) with
+  | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
+  | some zeile =>
+    let text := tippText ((zeile.trimLeft.drop marke.length).toString)
+    if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
+    else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
 
 -- Rechnen
 #eval 2 + 3 * 4
@@ -153,6 +94,60 @@ def bewertung (punkte : Nat) : String :=
 
 theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "bestanden" := ⟨rfl, rfl⟩
 
-/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
-   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
+/- ═══ PRÜFSTATION ═══ Klicke auf die letzte Zeile der Datei (#mission). Rechts steht dann,
+   ob die Mission geschafft ist, und dein Code für ILIAS. Bitte hier nichts ändern. -/
+open Lean Elab Command in
+elab "#mission " n:num " prüft " ids:ident* : command => do
+  -- die letzte Zeile darf nicht verändert werden
+  let soll : List String := match n.getNat with
+    | 0 => ["test_verdreifache", "test_flaeche", "test_quadrat", "test_bewertung"]
+    | 1 => ["test_summeQuadrate", "test_fak", "test_teilmengen"]
+    | 2 => ["aufgabe_2_1", "aufgabe_2_2", "aufgabe_2_3", "aufgabe_2_4", "aufgabe_2_5", "aufgabe_2_6", "aufgabe_2_7", "aufgabe_2_8", "aufgabe_2_9"]
+    | 3 => ["aufgabe_3_1", "aufgabe_3_2", "aufgabe_3_3", "aufgabe_3_4", "aufgabe_3_5", "aufgabe_3_6"]
+    | 4 => ["ungerade_formel", "teilmengen_formel", "laenge_bleibt", "summe_verdoppelt"]
+    | 5 => ["beispiel_5_3"]
+    | _ => []
+  if ids.toList.map (·.getId.toString) != soll then
+    logWarning m!"⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."
+    return
+  let mut offen : Array String := #[]
+  for id in ids do
+    let name := id.getId
+    if (← getEnv).find? name |>.isNone then
+      offen := offen.push s!"{name} (fehlt)"
+    else
+      let ax ← Lean.collectAxioms name
+      if ax.contains ``sorryAx then offen := offen.push s!"{name}"
+  if offen.isEmpty then
+    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
+    let s := "DDA-2026|" ++ (match n.getNat with
+      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
+      | 1 => "1|beispiel_1_3, beispiel_1_4"
+      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
+      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
+      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
+      | k => s!"{k}|beispiel_5_3")
+    let mut h : UInt64 := 14695981039346656037
+    for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
+    let abc := "ACEFHJKLMNPRTUVWXY3479".toList
+    let mut code := ""
+    for i in [0:5] do code := code.push (abc[((h >>> (UInt64.ofNat (i*11))) % 22).toNat]!)
+    logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
+  else
+    logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
+
+/- verschlüsselte Tipps
+  ⟦0 1 1⟧ 1727294c4710565f3664374840545d463428240d535e1c161325320d5f4541453064255812f39658202133430d
+  ⟦0 1 2⟧ 17302059461000166e642f0d50425343272c32591254471677646b0d5c1e
+  ⟦0 1 3⟧ 2021270d445540523621284b53535a53646c2f0d08107c57306d6117127e5342647e7c0d011018162a
+  ⟦0 2 1⟧ 002d240d74455c5d302d2e4312555c5336232848125853426423244353451252212a32485e5257586405344b50514718
+  ⟦0 2 2⟧ 09312d595b405e5f3e2d245f5710565f216423485b5457586405334a475d575830217b0d5042575f3021610712585d532c216f
+  ⟦0 2 3⟧ 2021270d545c5353272c240d1a5240532d30240d08107c57306d61055a5f575e21647b0d7c51461f647e61635344120c7964235f57594653646e61455d555a53
+  ⟦0 3 1⟧ 012d2f0d7342554329212f5912475b536426244412465744202b315d5e551e162526245f12545b53641e20455e10455f362061405b4412452d27290d41555e5437306140475c465f342828575b5540426a
+  ⟦0 3 2⟧ 2a646b0d5c
+  ⟦0 3 3⟧ 2021270d434553523625350d1a5e120c640a20591b1008160a25350d080d1258646e6143
+  ⟦0 4 1⟧ 132d240d535d42532868614c50554016292d350d5c454016212d2f485f105b50646a6f0312445a532a646f031c10575a372161031c1e1c
+  ⟦0 4 2⟧ 2d22615d475e594221647d0d070012422c212f0d105e5b552c30614f574346572a2024431010575a3721610f50554142252a25485c12
+  ⟦0 4 3⟧ 2021270d505545533630344355101a46312a2a59571008160a253504120a1265303628435510080b4e646144541042432a2f3548120c120374643545575e12142a2d2245461050533730204356555c1464212d5e571010542137354c5c54575866
+-/
 #mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung
