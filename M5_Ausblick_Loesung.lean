@@ -19,7 +19,7 @@ theorem beispiel_5_2 : ∃ p, 1000 < p ∧ Nat.Prime p := by
   exact ⟨p, by omega, prim⟩
 
 /-
-  Euklids Beweis Schritt für Schritt:
+  Euklids Beweis Schritt für Schritt (ein Widerspruchsbeweis):
   Für n betrachte m = n! + 1 und einen Primteiler p von m.
   Wäre p ≤ n, dann teilt p auch n!, also teilt p die Differenz 1. Widerspruch.
 -/
