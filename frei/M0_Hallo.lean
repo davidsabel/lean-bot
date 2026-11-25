@@ -143,11 +143,13 @@ theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "be
 
 -- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann, wie es weitergeht.
 #mission 0 prüft test_verdreifache test_flaeche test_quadrat test_bewertung
+-- Geschafft? Weiter zu Mission 1 (Strg+Klick):
+-- https://live.lean-lang.org/#url=https%3A%2F%2Fgithub.com%2Fdavidsabel%2Flean-bot%2Fblob%2Fmain%2Ffrei%2FM1_Rekursion.lean
 
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}Xfjufs!hfiu!ft!nju!Njttjpo!2!)Tush,Lmjdl*;¶iuuqt;00mjwf/mfbo.mboh/psh0$vsm>iuuqt&4B&3G&3Ghjuivc/dpn&3Gebwjetbcfm&3Gmfbo.cpu&3Gcmpc&3Gnbjo&3Ggsfj&3GN2`Sflvstjpo/mfbo
+⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}Xfjufs!hfiu!ft!nju!Njttjpo!2;!Efs!Mjol!tufiu!jn!Fejups!ejsflu!voufs!efs![fjmf!$njttjpo!)Tush,Lmjdl*/
 ⟦0 1 1⟧ 💢!Bvghbcf!1/2-!Ujqq!2;!Tdibv!ejs!wfsepqqmf!bo/!Xbt!nvttu!ev!åoefso@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!3
 ⟦0 1 2⟧ 💢!Bvghbcf!1/2-!Ujqq!3;!Tubuu!3!+!o!csbvditu!ev!4!+!o/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!4
 ⟦0 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/2;¶¶efg!wfsesfjgbdif!)o!;!Obu*!;!Obu!;>!4!+!o

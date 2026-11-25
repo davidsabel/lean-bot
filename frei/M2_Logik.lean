@@ -184,11 +184,13 @@ theorem aufgabe_2_9 (A B : Prop) : ¬(A ∨ B) → ¬A ∧ ¬B := by
 
 -- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann, wie es weitergeht.
 #mission 2 prüft aufgabe_2_1 aufgabe_2_2 aufgabe_2_3 aufgabe_2_4 aufgabe_2_5 aufgabe_2_6 aufgabe_2_7 aufgabe_2_8 aufgabe_2_9
+-- Geschafft? Weiter zu Mission 3 (Strg+Klick):
+-- https://live.lean-lang.org/#url=https%3A%2F%2Fgithub.com%2Fdavidsabel%2Flean-bot%2Fblob%2Fmain%2Ffrei%2FM3_Quantoren.lean
 
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦2⟧ bvghbcf`3`2!bvghbcf`3`3!bvghbcf`3`4!bvghbcf`3`5!bvghbcf`3`6!bvghbcf`3`7!bvghbcf`3`8!bvghbcf`3`9!bvghbcf`3`:}Xfjufs!hfiu!ft!nju!Njttjpo!4!)Tush,Lmjdl*;¶iuuqt;00mjwf/mfbo.mboh/psh0$vsm>iuuqt&4B&3G&3Ghjuivc/dpn&3Gebwjetbcfm&3Gmfbo.cpu&3Gcmpc&3Gnbjo&3Ggsfj&3GN4`Rvboupsfo/mfbo
+⟦2⟧ bvghbcf`3`2!bvghbcf`3`3!bvghbcf`3`4!bvghbcf`3`5!bvghbcf`3`6!bvghbcf`3`7!bvghbcf`3`8!bvghbcf`3`9!bvghbcf`3`:}Xfjufs!hfiu!ft!nju!Njttjpo!4;!Efs!Mjol!tufiu!jn!Fejups!ejsflu!voufs!efs![fjmf!$njttjpo!)Tush,Lmjdl*/
 ⟦2 1 1⟧ 💢!Bvghbcf!3/2-!Ujqq!2;!Hfobv!xjf!cfjtqjfm`{xfjuft-!ovs!xjse!ejftnbm!ebt!FSTUF!Bshvnfou!{vsýdlhfhfcfo/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!2!3
 ⟦2 1 2⟧ 💢!Bvghbcf!3/2-!Ujqq!3;!gvo!b!`!>?!b¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!3!2!4
 ⟦2 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!3/2;¶¶uifpsfn!bvghbcf`3`2!)B!C!;!Qspq*!;!B!↓!C!↓!B!;>¶!!gvo!b!`!>?!b

@@ -122,11 +122,13 @@ theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
 
 -- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann, wie es weitergeht.
 #mission 3 prüft aufgabe_3_1 aufgabe_3_2 aufgabe_3_3 aufgabe_3_4 aufgabe_3_5 aufgabe_3_6
+-- Geschafft? Weiter zu Mission 4 (Strg+Klick):
+-- https://live.lean-lang.org/#url=https%3A%2F%2Fgithub.com%2Fdavidsabel%2Flean-bot%2Fblob%2Fmain%2Ffrei%2FM4_Induktion.lean
 
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦3⟧ bvghbcf`4`2!bvghbcf`4`3!bvghbcf`4`4!bvghbcf`4`5!bvghbcf`4`6!bvghbcf`4`7}Xfjufs!hfiu!ft!nju!Njttjpo!5!)Tush,Lmjdl*;¶iuuqt;00mjwf/mfbo.mboh/psh0$vsm>iuuqt&4B&3G&3Ghjuivc/dpn&3Gebwjetbcfm&3Gmfbo.cpu&3Gcmpc&3Gnbjo&3Ggsfj&3GN5`Joevlujpo/mfbo
+⟦3⟧ bvghbcf`4`2!bvghbcf`4`3!bvghbcf`4`4!bvghbcf`4`5!bvghbcf`4`6!bvghbcf`4`7}Xfjufs!hfiu!ft!nju!Njttjpo!5;!Efs!Mjol!tufiu!jn!Fejups!ejsflu!voufs!efs![fjmf!$njttjpo!)Tush,Lmjdl*/
 ⟦3 1 1⟧ 💢!Bvghbcf!4/2-!Ujqq!2;!Xfmdif![bim!jtu!efs![fvhf@!Eboo!xjf!jn!Cfjtqjfm;!⟩[fvhf-!sgm⟪/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!2!3
 ⟦3 1 2⟧ 💢!Bvghbcf!4/2-!Ujqq!3;!⟩24-!sgm⟪¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!2!4
 ⟦3 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!4/2;¶¶uifpsfn!bvghbcf`4`2!;!∄!o!;!Obu-!o!,!o!>!37!;>!⟩24-!sgm⟪

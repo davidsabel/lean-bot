@@ -115,11 +115,13 @@ theorem test_teilmengen : teilmengen 10 = 1024 := rfl
 
 -- ✅ PRÜFSTATION: Klicke auf die nächste Zeile, rechts steht dann, wie es weitergeht.
 #mission 1 prüft test_summeQuadrate test_fak test_teilmengen
+-- Geschafft? Weiter zu Mission 2 (Strg+Klick):
+-- https://live.lean-lang.org/#url=https%3A%2F%2Fgithub.com%2Fdavidsabel%2Flean-bot%2Fblob%2Fmain%2Ffrei%2FM2_Logik.lean
 
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦1⟧ uftu`tvnnfRvbesbuf!uftu`gbl!uftu`ufjmnfohfo}Xfjufs!hfiu!ft!nju!Njttjpo!3!)Tush,Lmjdl*;¶iuuqt;00mjwf/mfbo.mboh/psh0$vsm>iuuqt&4B&3G&3Ghjuivc/dpn&3Gebwjetbcfm&3Gmfbo.cpu&3Gcmpc&3Gnbjo&3Ggsfj&3GN3`Mphjl/mfbo
+⟦1⟧ uftu`tvnnfRvbesbuf!uftu`gbl!uftu`ufjmnfohfo}Xfjufs!hfiu!ft!nju!Njttjpo!3;!Efs!Mjol!tufiu!jn!Fejups!ejsflu!voufs!efs![fjmf!$njttjpo!)Tush,Lmjdl*/
 ⟦1 1 1⟧ 💢!Bvghbcf!2/2-!Ujqq!2;!Gbtu!xjf!cfj!tvnnf/!Xbt!xjse!cfjn!Tdisjuu!wpo!o!{v!o!,!2!eb{vhf{åimu@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!2!3
 ⟦1 1 2⟧ 💢!Bvghbcf!2/2-!Ujqq!3;!Tubuu!)o!,!2*!lpnnu!)o!,!2*!+!)o!,!2*!eb{v;!tvnnfRvbesbuf!o!,!)o!,!2*!+!)o!,!2*¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!2!2!4
 ⟦1 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!2/2;¶¶efg!tvnnfRvbesbuf!;!Obu!↓!Obu¶!!}!1!!!!!>?!1¶!!}!o!,!2!>?!tvnnfRvbesbuf!o!,!)o!,!2*!+!)o!,!2*
