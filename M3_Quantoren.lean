@@ -2,11 +2,9 @@ import Lean
 /-
   Mission 3: Quantoren
   ====================
-  Hängst du fest? Schreibe ganz unten in eine neue Zeile zum Beispiel
-      #tipp 3 1        (Tipp 1 zu Aufgabe 3.1)
-      #tipp 3 1 2      (Tipp 2)
-      #tipp 3 1 3      (Lösung dieser Aufgabe)
-  und klicke darauf. Rechts erscheint die Hilfe.
+  Hängst du fest? Unter jeder Aufgabe steht eine Zeile wie  -- #tipp 3 1
+  Lösche die zwei Striche am Anfang: Rechts erscheint Tipp 1.
+  Mit  #tipp 3 1 2  kommt Tipp 2, mit  #tipp 3 1 3  die Lösung dieser Aufgabe.
 
   ∃ x, P x    ist ein Paar ⟨x, Beweis⟩: ein Zeuge x und der Beweis, dass P x gilt.
   ∀ x, P x    ist eine Funktion: Sie bekommt ein x und liefert einen Beweis von P x.
@@ -16,119 +14,8 @@ import Lean
     omega    löst lineare Gleichungen und Ungleichungen über Nat automatisch
 -/
 
-/- ─────────────────────────────────────────────────────────────
-  Schritt 1: Es gibt ... (Zeuge angeben)
-──────────────────────────────────────────────────────────────── -/
-
--- Beispiel: Zeuge 7, den Rest rechnet Lean aus.
-theorem beispiel_existiert : ∃ n : Nat, n * n = 49 := ⟨7, rfl⟩
-
--- ✏️ Aufgabe 3.1: Es gibt ein n mit n + n = 26.
-theorem aufgabe_3_1 : ∃ n : Nat, n + n = 26 := sorry
-
--- Eine eigene Aussageform: n ist gerade, wenn n = 2 * k für ein k.
-def gerade (n : Nat) : Prop := ∃ k, n = 2 * k
-
--- Beispiel
-theorem beispiel_gerade : gerade 10 := ⟨5, rfl⟩
-
--- ✏️ Aufgabe 3.2: 42 ist gerade.
-theorem aufgabe_3_2 : gerade 42 := sorry
-
-/- ─────────────────────────────────────────────────────────────
-  Schritt 2: Für alle ... (eine Funktion)
-──────────────────────────────────────────────────────────────── -/
-
--- Beispiel: 4n ist immer gerade. Für jedes n ist 2n der Zeuge, omega rechnet nach.
-theorem beispiel_alle : ∀ n : Nat, gerade (4 * n) :=
-  fun n => ⟨2 * n, by omega⟩
-
--- ✏️ Aufgabe 3.3: 2n ist immer gerade.
-theorem aufgabe_3_3 : ∀ n : Nat, gerade (2 * n) :=
-  sorry
-
--- Beispiel: Ist n gerade, dann auch n + 4. Mit Taktiken:
-theorem beispiel_plus4 : ∀ n : Nat, gerade n → gerade (n + 4) := by
-  intro n h
-  obtain ⟨k, hk⟩ := h        -- h auspacken: hk : n = 2 * k
-  exact ⟨k + 2, by omega⟩    -- n + 4 = 2 * (k + 2)
-
--- ✏️ Aufgabe 3.4: Ist n gerade, dann auch n + 2.
-theorem aufgabe_3_4 : ∀ n : Nat, gerade n → gerade (n + 2) := by
-  sorry
-
-/- ─────────────────────────────────────────────────────────────
-  Schritt 3: Gegenbeispiele
-──────────────────────────────────────────────────────────────── -/
-/-
-  Beispiele sind kein Beweis! Für n = 0, 1, ..., 39 ist n*n + n + 41 eine Primzahl,
-  aber nicht für alle n. Einen ∀-Satz widerlegt man durch EIN Gegenbeispiel.
--/
-
--- Beispiel: Widerlege "Jede natürliche Zahl ist kleiner als 10".
-theorem beispiel_gegen : ¬ (∀ n : Nat, n < 10) := by
-  intro h            -- angenommen, es gilt für alle n ...
-  have h10 := h 10   -- ... dann auch für 10: h10 : 10 < 10
-  omega              -- Widerspruch
-
--- ✏️ Aufgabe 3.5: Widerlege "Jede natürliche Zahl ist kleiner als 100".
-theorem aufgabe_3_5 : ¬ (∀ n : Nat, n < 100) := by
-  sorry
-
--- ✏️ Aufgabe 3.6: Widerlege "Jede natürliche Zahl ist gerade".
-theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
-  sorry
-
-
-/-
-  ═════════════════════════════════════════════════════════════
-  PRÜFSTATION der Discrete Droid Academy. Bitte nicht ändern!
-  Klicke auf die letzte Zeile (#mission). Rechts steht dann,
-  ob die Mission geschafft ist, und dein Code für ILIAS.
-  ═════════════════════════════════════════════════════════════
--/
-open Lean Elab Command in
-elab "#mission " n:num " prüft " ids:ident* : command => do
-  -- die letzte Zeile darf nicht verändert werden
-  let soll : List String := match n.getNat with
-    | 0 => ["test_verdreifache", "test_flaeche", "test_quadrat", "test_bewertung"]
-    | 1 => ["test_summeQuadrate", "test_fak", "test_teilmengen"]
-    | 2 => ["aufgabe_2_1", "aufgabe_2_2", "aufgabe_2_3", "aufgabe_2_4", "aufgabe_2_5", "aufgabe_2_6", "aufgabe_2_7", "aufgabe_2_8", "aufgabe_2_9"]
-    | 3 => ["aufgabe_3_1", "aufgabe_3_2", "aufgabe_3_3", "aufgabe_3_4", "aufgabe_3_5", "aufgabe_3_6"]
-    | 4 => ["ungerade_formel", "teilmengen_formel", "laenge_bleibt", "summe_verdoppelt"]
-    | 5 => ["beispiel_5_3"]
-    | _ => []
-  if ids.toList.map (·.getId.toString) != soll then
-    logWarning m!"⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."
-    return
-  let mut offen : Array String := #[]
-  for id in ids do
-    let name := id.getId
-    if (← getEnv).find? name |>.isNone then
-      offen := offen.push s!"{name} (fehlt)"
-    else
-      let ax ← Lean.collectAxioms name
-      if ax.contains ``sorryAx then offen := offen.push s!"{name}"
-  if offen.isEmpty then
-    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
-    let s := "DDA-2026|" ++ (match n.getNat with
-      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
-      | 1 => "1|beispiel_1_3, beispiel_1_4"
-      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
-      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
-      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
-      | k => s!"{k}|beispiel_5_3")
-    let mut h : UInt64 := 14695981039346656037
-    for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
-    let abc := "ACEFHJKLMNPRTUVWXY3479".toList
-    let mut code := ""
-    for i in [0:5] do code := code.push (abc[((h >>> (UInt64.ofNat (i*11))) % 22).toNat]!)
-    logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
-  else
-    logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
-
-
-/-- Hilfen: `#tipp m a` zeigt Tipp 1 zu Aufgabe m.a, `#tipp m a 2` Tipp 2, `#tipp m a 3` die Lösung. -/
+/- ⚙️ Werkzeuge der Discrete Droid Academy: Tipps und Prüfstation (bitte nicht ändern).
+   Weiter unten geht es los! -/
 def tippHex (c : Char) : Nat :=
   if c.isDigit then c.toNat - '0'.toNat else c.toNat - 'a'.toNat + 10
 def tippText (hex : String) : String := Id.run do
@@ -169,5 +56,115 @@ elab "#tipp " m:num a:num s:(num)? : command => do
     else
       logInfo m!"💡 Aufgabe {nr}, Tipp {z}: {tippText hex}\n\nNoch ein Schritt weiter: #tipp {m.getNat} {a.getNat} {z + 1}"
   | none => logWarning m!"Zu Aufgabe {nr} gibt es keinen Tipp {stufe}. Probiere z.B. #tipp {m.getNat} 1"
+open Lean Elab Command in
+elab "#mission " n:num " prüft " ids:ident* : command => do
+  -- die letzte Zeile darf nicht verändert werden
+  let soll : List String := match n.getNat with
+    | 0 => ["test_verdreifache", "test_flaeche", "test_quadrat", "test_bewertung"]
+    | 1 => ["test_summeQuadrate", "test_fak", "test_teilmengen"]
+    | 2 => ["aufgabe_2_1", "aufgabe_2_2", "aufgabe_2_3", "aufgabe_2_4", "aufgabe_2_5", "aufgabe_2_6", "aufgabe_2_7", "aufgabe_2_8", "aufgabe_2_9"]
+    | 3 => ["aufgabe_3_1", "aufgabe_3_2", "aufgabe_3_3", "aufgabe_3_4", "aufgabe_3_5", "aufgabe_3_6"]
+    | 4 => ["ungerade_formel", "teilmengen_formel", "laenge_bleibt", "summe_verdoppelt"]
+    | 5 => ["beispiel_5_3"]
+    | _ => []
+  if ids.toList.map (·.getId.toString) != soll then
+    logWarning m!"⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."
+    return
+  let mut offen : Array String := #[]
+  for id in ids do
+    let name := id.getId
+    if (← getEnv).find? name |>.isNone then
+      offen := offen.push s!"{name} (fehlt)"
+    else
+      let ax ← Lean.collectAxioms name
+      if ax.contains ``sorryAx then offen := offen.push s!"{name}"
+  if offen.isEmpty then
+    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
+    let s := "DDA-2026|" ++ (match n.getNat with
+      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
+      | 1 => "1|beispiel_1_3, beispiel_1_4"
+      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
+      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
+      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
+      | k => s!"{k}|beispiel_5_3")
+    let mut h : UInt64 := 14695981039346656037
+    for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
+    let abc := "ACEFHJKLMNPRTUVWXY3479".toList
+    let mut code := ""
+    for i in [0:5] do code := code.push (abc[((h >>> (UInt64.ofNat (i*11))) % 22).toNat]!)
+    logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
+  else
+    logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
+/- ─────────────────────────────────────────────────────────────
+  Schritt 1: Es gibt ... (Zeuge angeben)
+──────────────────────────────────────────────────────────────── -/
+
+-- Beispiel: Zeuge 7, den Rest rechnet Lean aus.
+theorem beispiel_existiert : ∃ n : Nat, n * n = 49 := ⟨7, rfl⟩
+
+-- ✏️ Aufgabe 3.1: Es gibt ein n mit n + n = 26.
+theorem aufgabe_3_1 : ∃ n : Nat, n + n = 26 := sorry
+-- #tipp 3 1
+
+-- Eine eigene Aussageform: n ist gerade, wenn n = 2 * k für ein k.
+def gerade (n : Nat) : Prop := ∃ k, n = 2 * k
+
+-- Beispiel
+theorem beispiel_gerade : gerade 10 := ⟨5, rfl⟩
+
+-- ✏️ Aufgabe 3.2: 42 ist gerade.
+theorem aufgabe_3_2 : gerade 42 := sorry
+-- #tipp 3 2
+
+/- ─────────────────────────────────────────────────────────────
+  Schritt 2: Für alle ... (eine Funktion)
+──────────────────────────────────────────────────────────────── -/
+
+-- Beispiel: 4n ist immer gerade. Für jedes n ist 2n der Zeuge, omega rechnet nach.
+theorem beispiel_alle : ∀ n : Nat, gerade (4 * n) :=
+  fun n => ⟨2 * n, by omega⟩
+
+-- ✏️ Aufgabe 3.3: 2n ist immer gerade.
+theorem aufgabe_3_3 : ∀ n : Nat, gerade (2 * n) :=
+  sorry
+-- #tipp 3 3
+
+-- Beispiel: Ist n gerade, dann auch n + 4. Mit Taktiken:
+theorem beispiel_plus4 : ∀ n : Nat, gerade n → gerade (n + 4) := by
+  intro n h
+  obtain ⟨k, hk⟩ := h        -- h auspacken: hk : n = 2 * k
+  exact ⟨k + 2, by omega⟩    -- n + 4 = 2 * (k + 2)
+
+-- ✏️ Aufgabe 3.4: Ist n gerade, dann auch n + 2.
+theorem aufgabe_3_4 : ∀ n : Nat, gerade n → gerade (n + 2) := by
+  sorry
+-- #tipp 3 4
+
+/- ─────────────────────────────────────────────────────────────
+  Schritt 3: Gegenbeispiele
+──────────────────────────────────────────────────────────────── -/
+/-
+  Beispiele sind kein Beweis! Für n = 0, 1, ..., 39 ist n*n + n + 41 eine Primzahl,
+  aber nicht für alle n. Einen ∀-Satz widerlegt man durch EIN Gegenbeispiel.
+-/
+
+-- Beispiel: Widerlege "Jede natürliche Zahl ist kleiner als 10".
+theorem beispiel_gegen : ¬ (∀ n : Nat, n < 10) := by
+  intro h            -- angenommen, es gilt für alle n ...
+  have h10 := h 10   -- ... dann auch für 10: h10 : 10 < 10
+  omega              -- Widerspruch
+
+-- ✏️ Aufgabe 3.5: Widerlege "Jede natürliche Zahl ist kleiner als 100".
+theorem aufgabe_3_5 : ¬ (∀ n : Nat, n < 100) := by
+  sorry
+-- #tipp 3 5
+
+-- ✏️ Aufgabe 3.6: Widerlege "Jede natürliche Zahl ist gerade".
+theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
+  sorry
+-- #tipp 3 6
+
+/- ═══ PRÜFSTATION ═══ Klicke auf die nächste Zeile. Rechts steht dann, ob die Mission
+   geschafft ist, und dein Code für ILIAS. Bitte die Zeile nicht ändern. -/
 #mission 3 prüft aufgabe_3_1 aufgabe_3_2 aufgabe_3_3 aufgabe_3_4 aufgabe_3_5 aufgabe_3_6
