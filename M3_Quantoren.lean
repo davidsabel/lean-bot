@@ -2,8 +2,8 @@ import Lean
 /-
   Mission 3: Quantoren
   ====================
-  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
-  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M3.md
+  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
+  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM3_Quantoren_Tipps.lean
 
   ∃ x, P x    ist ein Paar ⟨x, Beweis⟩: ein Zeuge x und der Beweis, dass P x gilt.
   ∀ x, P x    ist eine Funktion: Sie bekommt ein x und liefert einen Beweis von P x.

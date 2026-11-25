@@ -2,8 +2,8 @@ import Lean
 /-
   Mission 2: Beweise sind Programme
   =================================
-  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
-  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M2.md
+  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
+  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM2_Logik_Tipps.lean
 
   In Lean ist eine Aussage ein TYP und ein Beweis ist ein WERT dieses Typs.
   Eine Aussage zu beweisen heißt also: ein Programm schreiben, das den

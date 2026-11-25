@@ -2,8 +2,8 @@ import Lean
 /-
   Mission 1: Rekursion und erste Beweise
   ======================================
-  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
-  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M1.md
+  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
+  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM1_Rekursion_Tipps.lean
 
   Natürliche Zahlen sind in Lean so gebaut: Jede Zahl ist entweder
   `0` oder `n + 1` (der Nachfolger von n). Funktionen auf Nat

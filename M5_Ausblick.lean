@@ -2,8 +2,8 @@ import Mathlib
 /-
   Mission 5: Ausblick, die große Bibliothek Mathlib
   =================================================
-  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
-  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M5.md
+  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
+  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM5_Ausblick_Tipps.lean
 
   Mathlib ist eine riesige Sammlung formal bewiesener Mathematik
   (über 250 000 Sätze), geschrieben von Hunderten Freiwilligen.

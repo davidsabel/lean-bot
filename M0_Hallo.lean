@@ -2,8 +2,8 @@ import Lean
 /-
   Mission 0: Hallo Lean!
   ======================
-  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
-  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M0.md
+  Hängst du fest? Hier ist dieselbe Mission mit Tipps (Strg+Klick):
+  https://live.lean-lang.org/#url=https%3A%2F%2Fgist.githubusercontent.com%2Fdavidsabel%2F12dc468ede87291e5ad712797f23ed1a%2Fraw%2FM0_Hallo_Tipps.lean
 
   Lean ist eine Programmiersprache. Rechts im Fenster siehst du,
   was Lean zu jeder Zeile sagt. Klicke auf eine Zeile mit #eval.
