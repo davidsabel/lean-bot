@@ -2,6 +2,39 @@ import Lean
 /-
   Mission 0: Hallo Lean!
   ======================
+  Willkommen beim Lean-Bot: Beweisen ist Programmieren!
+  ─────────────────────────────────────────────────────
+  Du programmierst gern? Dann kannst du auch beweisen.
+
+  Lean ist eine Programmiersprache, in der man nicht nur Programme schreibt,
+  sondern auch beweist, dass sie stimmen. Ein Beweis ist in Lean ein Programm,
+  und Lean prüft es so streng wie ein Compiler. Mit genau diesem Werkzeug wurde
+  im November 2026 ein Beweis der Riemannschen Vermutung geprüft, eines der
+  berühmtesten offenen Probleme der Mathematik.
+
+  • Keine Installation: Alles läuft hier im Browser.
+  • Kleine Schritte: sechs Missionen, jede dauert etwa 20 bis 40 Minuten.
+  • Sofortige Rückmeldung: Rechts im Fenster sagt Lean dir, ob dein Beweis stimmt.
+  • Vorwissen: etwas Programmiererfahrung. Die Mathematik (Logik, Quantoren,
+    Induktion) wird jeweils kurz erklärt.
+
+  Die Missionen:
+    0  Hallo Lean: rechnen, Funktionen, erster Beweis
+    1  Rekursion und Tests                 (Anzahl der Teilmengen)
+    2  Beweise sind Programme              (Aussagenlogik)
+    3  Quantoren                           (Prädikatenlogik, Gegenbeispiele)
+    4  Induktion ist Rekursion             (vollständige Induktion)
+    5  Ausblick: Mathlib, Euklid, Riemann  (Primzahlen, Widerspruchsbeweis)
+  Am Ende jeder Mission bekommst du den Link zur nächsten.
+
+  Zwei Hinweise zum Editor:
+  • Beim ersten Öffnen erscheint rechts oben "Can I Trust This Proof?".
+    Klicke auf "Don't show this again". Der Hinweis hat einen ernsten
+    Hintergrund: Lean prüft, ob ein Beweis stimmt, aber nicht, ob die Aussage
+    die gemeinte ist. Fremden Beweisen sollte man nicht blind vertrauen.
+  • Lade die Seite nicht neu, sonst ist deine Arbeit weg. Kopiere sie
+    vorher in eine Datei, wenn du eine Pause machst.
+
   So geht es:
     🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
         (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)

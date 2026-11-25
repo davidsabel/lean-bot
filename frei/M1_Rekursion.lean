@@ -2,6 +2,11 @@ import Lean
 /-
   Mission 1: Rekursion und erste Beweise
   ======================================
+  Worum geht es? Natürliche Zahlen sind in Lean entweder 0 oder n + 1.
+  Funktionen darauf schreibt man deshalb mit genau diesen zwei Fällen.
+  Das ist Rekursion, und es ist dieselbe Idee wie die vollständige Induktion,
+  die in Mission 4 kommt.
+
   So geht es:
     🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
         (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)

@@ -2,6 +2,9 @@ import Lean
 /-
   Mission 3: Quantoren
   ====================
+  Worum geht es? Du definierst "gerade" selbst, beweist Aussagen über alle
+  natürlichen Zahlen und widerlegst Allaussagen durch ein Gegenbeispiel.
+
   So geht es:
     🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
         (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)

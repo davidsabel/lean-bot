@@ -2,6 +2,13 @@ import Mathlib
 /-
   Mission 5: Ausblick, die große Bibliothek Mathlib
   =================================================
+  Worum geht es? Mathlib ist eine riesige Bibliothek formal bewiesener
+  Mathematik. Du siehst Euklids Beweis, dass es unendlich viele Primzahlen
+  gibt, als Lean-Programm und findest die Aussage der Riemannschen
+  Vermutung in der Bibliothek.
+  Hinweis: Beim ersten Öffnen lädt der Editor die Bibliothek. Das kann
+  ein bis zwei Minuten dauern.
+
   So geht es:
     🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
         (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)
@@ -96,7 +103,7 @@ theorem beispiel_5_3 : Nat.Prime (2 ^ 7 - 1) := by
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦5⟧ cfjtqjfm`6`4}🎊!Ev!ibtu!bmmf!Njttjpofo!hftdibggu/!Ifs{mjdifo!Hmýdlxvotdi"
+⟦5⟧ cfjtqjfm`6`4}🎊!Ev!ibtu!bmmf!Njttjpofo!hftdibggu/!Ifs{mjdifo!Hmýdlxvotdi"¶¶Xjf!hfiu!ft!xfjufs@!Lptufompt!bvg!mfbo.mboh/psh;¶‣!Gvodujpobm!Qsphsbnnjoh!jo!Mfbo;!Mfbo!bmt!Qsphsbnnjfstqsbdif¶‣!Nbuifnbujdt!jo!Mfbo;!Nbuifnbujl!nju!Nbuimjc¶‣!Uifpsfn!Qspwjoh!jo!Mfbo!5;!ejf!Mphjl!ijoufs!Mfbo¶‣!Obuvsbm!Ovncfs!Hbnf;!Sfdifosfhfmo!Tdisjuu!gýs!Tdisjuu!tfmctu!cfxfjtfo
 ⟦5 1 1⟧ 💢!Bvghbcf!6/2-!Ujqq!2;!Tdibv!ejs!cfjtqjfm`6`2!bo;!Epsu!{fjhu!fjof!fjo{jhf!Ublujl-!ebtt!212!fjof!Qsjn{bim!jtu/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!3
 ⟦5 1 2⟧ 💢!Bvghbcf!6/2-!Ujqq!3;!opsn`ovn¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!4
 ⟦5 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!6/2;¶¶uifpsfn!cfjtqjfm`6`4!;!Obu/Qsjnf!)3!_!8!.!2*!;>!cz¶!!opsn`ovn

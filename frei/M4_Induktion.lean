@@ -2,6 +2,12 @@ import Lean
 /-
   Mission 4: Induktion ist Rekursion
   ==================================
+  Worum geht es? Ein Induktionsbeweis ist in Lean eine rekursive Funktion,
+  die Beweise zurückgibt: Der Fall 0 ist der Induktionsanfang, im Fall n + 1
+  ruft sich die Funktion selbst für n auf, das ist die Induktionshypothese.
+  Damit beweist du zum ersten Mal etwas über dein eigenes Programm für ALLE
+  Eingaben, nicht nur für ein paar Tests.
+
   So geht es:
     🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
         (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)

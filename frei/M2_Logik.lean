@@ -2,6 +2,13 @@ import Lean
 /-
   Mission 2: Beweise sind Programme
   =================================
+  Worum geht es? Das ist die zentrale Idee des Kurses: Eine Aussage ist
+  ein TYP, und ein Beweis ist ein PROGRAMM dieses Typs. Der Kettenschluss
+  "aus A → B und B → C folgt A → C" ist zum Beispiel einfach die
+  Komposition zweier Funktionen. Danach lernst du den Taktik-Modus kennen:
+  Du baust das Programm Schritt für Schritt und siehst rechts immer, was
+  noch zu zeigen ist.
+
   So geht es:
     🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
         (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)
