@@ -2,9 +2,16 @@ import Lean
 /-
   Mission 3: Quantoren
   ====================
-  Hängst du fest? Unter jeder Aufgabe steht eine Zeile wie  -- #tipp 3 1
-  Lösche die zwei Striche am Anfang: Rechts erscheint Tipp 1.
-  Mit  #tipp 3 1 2  kommt Tipp 2, mit  #tipp 3 1 3  die Lösung dieser Aufgabe.
+  So geht es:
+    🏁  Scrolle nach unten zur Flagge 🏁. Dort beginnt die Mission.
+        (Darüber stehen nur Werkzeuge, die musst du nicht lesen.)
+    ✏️  Bei jeder Aufgabe ersetzt du `sorry` durch deine Lösung.
+        Rechts im Fenster zeigt Lean sofort, ob es passt.
+    💡  Hängst du fest? Unter jeder Aufgabe steht eine Zeile wie  -- #tipp 3 1
+        Lösche die zwei Striche am Anfang, dann erscheint rechts Tipp 1.
+        #tipp 3 1 2 gibt Tipp 2, #tipp 3 1 3 die Lösung dieser Aufgabe.
+    ✅  Ganz unten steht die Prüfstation. Klicke auf die Zeile #mission:
+        Rechts steht, was noch offen ist, oder dein Code für ILIAS.
 
   ∃ x, P x    ist ein Paar ⟨x, Beweis⟩: ein Zeuge x und der Beweis, dass P x gilt.
   ∀ x, P x    ist eine Funktion: Sie bekommt ein x und liefert einen Beweis von P x.
@@ -14,7 +21,7 @@ import Lean
     omega    löst lineare Gleichungen und Ungleichungen über Nat automatisch
 -/
 
-/- ⚙️ Werkzeuge für Tipps und Prüfstation (bitte nicht ändern). Weiter unten geht es los! -/
+/- ⚙️ Werkzeuge für Tipps und Prüfstation (bitte nicht ändern). Weiter unten bei 🏁 geht es los! -/
 open Lean Elab Command in
 def daten (marke : String) : CommandElabM (Option String) := do
   let z? := ((← getFileMap).source.splitOn "\n").find? (·.startsWith marke)
@@ -36,6 +43,10 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     else if (← Lean.collectAxioms id.getId).contains ``sorryAx then offen := offen.push s!"{id.getId}"
   if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: {code}"
   else logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
+
+/- ═════════════════════════════════════════════════════════════
+   🏁 START: Hier geht die Mission los!
+   ═════════════════════════════════════════════════════════════ -/
 
 /- ─────────────────────────────────────────────────────────────
   Schritt 1: Es gibt ... (Zeuge angeben)
