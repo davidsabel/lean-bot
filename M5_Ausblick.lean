@@ -12,19 +12,22 @@ import Mathlib
 -/
 
 /- ⚙️ Tipp-Werkzeug (bitte nicht ändern). Weiter unten geht es los! -/
-def tippText (hex : String) : String := Id.run do
-  let k := "DDA-2026".toUTF8; let cs := hex.trim.toList.toArray; let mut b : ByteArray := .empty
+def tippText (hex : List Char) : String := Id.run do
+  let k := "DDA-2026".toList.map Char.toNat
   let w (c : Char) : Nat := if c.isDigit then c.toNat - 48 else c.toNat - 87
-  for i in [0:cs.size / 2] do b := b.push ((w cs[2*i]! * 16 + w cs[2*i+1]!) ^^^ (k.get! (i % k.size)).toNat).toUInt8
+  let mut b : ByteArray := .empty
+  for i in [0:hex.length / 2] do
+    b := b.push ((w hex[2*i]! * 16 + w hex[2*i+1]!) ^^^ k[i % k.length]!).toUInt8
   return (String.fromUTF8? b).getD "?"
 open Lean Elab Command in
 elab "#tipp " m:num a:num s:(num)? : command => do
   let (x, y, z) := (m.getNat, a.getNat, (s.map (·.getNat)).getD 1)
-  let marke := s!"⟦{x} {y} {z}⟧"
-  match ((← getFileMap).source.splitOn "\n").find? (·.trimLeft.startsWith marke) with
+  let marke := s!"⟦{x} {y} {z}⟧ ".toList
+  let zeilen := ((← getFileMap).source.splitOn "\n").map (·.toList.dropWhile (· == ' '))
+  match zeilen.find? (marke.isPrefixOf ·) with
   | none => logWarning m!"Zu Aufgabe {x}.{y} gibt es keinen Tipp {z}."
   | some zeile =>
-    let text := tippText ((zeile.trimLeft.drop marke.length).toString)
+    let text := tippText ((zeile.drop marke.length).filter (·.isAlphanum))
     if z == 3 then logInfo m!"🔑 Lösung zu Aufgabe {x}.{y}:\n\n{text}"
     else logInfo m!"💡 Aufgabe {x}.{y}, Tipp {z}: {text}\n\nNoch ein Schritt weiter: #tipp {x} {y} {z + 1}"
 
