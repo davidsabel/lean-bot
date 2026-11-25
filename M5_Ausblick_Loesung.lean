@@ -1,7 +1,10 @@
 import Mathlib
 /-
-  Mission 5: Ausblick, die große Bibliothek Mathlib
+  Musterlösung zu Mission 5: Ausblick, die große Bibliothek Mathlib
   =================================================
+  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
+  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M5.md
+
   Mathlib ist eine riesige Sammlung formal bewiesener Mathematik
   (über 250 000 Sätze), geschrieben von Hunderten Freiwilligen.
   Alles darin hat Lean geprüft. Du kannst die Sätze benutzen wie Bibliotheksfunktionen.
@@ -11,6 +14,7 @@ import Mathlib
 #check Nat.exists_infinite_primes   -- Euklid: Über jeder Zahl liegt eine Primzahl
 
 -- Mathlib-Taktiken rechnen für uns:
+-- 👀 VORMACHEN
 theorem beispiel_5_1 : Nat.Prime 101 := by norm_num
 
 -- Den Satz von Euklid benutzen: Es gibt eine Primzahl größer als 1000.
@@ -35,10 +39,7 @@ theorem euklid (n : Nat) : ∃ p, n ≤ p ∧ Nat.Prime p := by
   have h3 : p ∣ 1 := (Nat.dvd_add_right h1).mp h2
   exact Nat.Prime.one_lt prim |>.ne' (Nat.dvd_one.mp h3)
 
-/-
-  DEINE AUFGABE
-  Zeige mit norm_num, dass 2^7 - 1 = 127 eine Primzahl ist (eine Mersenne-Primzahl).
--/
+-- ✍️ NACHMACHEN (Aufgabe 5.1): 2^7 - 1 = 127 ist eine Primzahl (eine Mersenne-Primzahl).
 theorem beispiel_5_3 : Nat.Prime (2 ^ 7 - 1) := by
   norm_num
 
@@ -52,6 +53,7 @@ theorem beispiel_5_3 : Nat.Prime (2 ^ 7 - 1) := by
   Aber er ist in derselben Sprache geschrieben, die du gerade benutzt,
   und Lean hat ihn genauso geprüft wie deine kleinen Beweise hier.
 -/
+
 
 /-
   ═════════════════════════════════════════════════════════════
@@ -71,7 +73,14 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
       let ax ← Lean.collectAxioms name
       if ax.contains ``sorryAx then offen := offen.push s!"{name}"
   if offen.isEmpty then
-    let s := s!"DDA-2026|{n.getNat}|" ++ ", ".intercalate (ids.toList.map (·.getId.toString))
+    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
+    let s := "DDA-2026|" ++ (match n.getNat with
+      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
+      | 1 => "1|beispiel_1_3, beispiel_1_4"
+      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
+      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
+      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
+      | k => s!"{k}|beispiel_5_3")
     let mut h : UInt64 := 14695981039346656037
     for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
     let abc := "ACEFHJKLMNPRTUVWXY3479".toList
@@ -80,5 +89,6 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
   else
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
+
 
 -- In der Musterlösung gibt es keinen Code. Den bekommst du nur mit deiner eigenen Lösung.

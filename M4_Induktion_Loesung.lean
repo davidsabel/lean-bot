@@ -1,43 +1,36 @@
 import Lean
 /-
-  Mission 4: Induktion ist Rekursion
+  Musterlösung zu Mission 4: Induktion ist Rekursion
   ==================================
-  Aus Mission 1 kennst du:
+  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
+  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M4.md
+
+  Tests prüfen einzelne Werte. Mit Induktion beweisen wir Aussagen für ALLE n.
+
+  Ein Beweis durch Induktion ist eine REKURSIVE FUNKTION, die Beweise
+  zurückgibt: Für 0 liefert sie den Induktionsanfang, für n + 1 benutzt sie
+  den Beweis für n (das ist die Induktionsvoraussetzung!).
 -/
+
+/- ─────────────────────────────────────────────────────────────
+  Schritt 1: Induktion über Zahlen
+──────────────────────────────────────────────────────────────── -/
+
+-- Aus Mission 1 kennst du:
 def summe : Nat → Nat
   | 0     => 0
   | n + 1 => summe n + (n + 1)
 
-/-
-  Tests prüfen einzelne Werte. Jetzt beweisen wir die Gaußsche Formel
-  für ALLE n:   2 * summe n = n * (n + 1)
-
-  Ein Beweis durch Induktion ist eine REKURSIVE FUNKTION, die Beweise
-  zurückgibt: Für 0 liefert sie den Induktionsanfang, für n + 1 ruft sie
-  sich selbst für n auf (das ist die Induktionsvoraussetzung!).
--/
-theorem gauss : ∀ n : Nat, 2 * summe n = n * (n + 1)
-  | 0     => rfl                       -- Induktionsanfang: einfach ausrechnen
-  | n + 1 => by
-      have iv := gauss n               -- rekursiver Aufruf = Induktionsvoraussetzung
-      simp only [summe]                -- summe (n+1) = summe n + (n+1) einsetzen
-      grind                            -- Rechnen mit +, * erledigt grind
-
-/-
-  Dasselbe mit der Taktik `induction`, so wie man es auf Papier aufschreibt:
--/
-theorem gauss' (n : Nat) : 2 * summe n = n * (n + 1) := by
+-- 👀 VORMACHEN: die Gaußsche Formel für ALLE n, mit der Taktik `induction`.
+-- Klicke auf die Zeilen und schau rechts, was jeweils zu zeigen ist.
+theorem gauss (n : Nat) : 2 * summe n = n * (n + 1) := by
   induction n with
-  | zero => rfl
-  | succ n iv =>
-      simp only [summe]
-      grind
+  | zero => rfl                 -- Induktionsanfang: einfach ausrechnen
+  | succ n iv =>                -- iv ist die Induktionsvoraussetzung für n
+      simp only [summe]         -- summe (n + 1) durch seine Definition ersetzen
+      grind                     -- den Rest (Rechnen mit iv) erledigt grind
 
-/-
-  DEINE AUFGABEN
--/
-
--- Aufgabe 1: die Summe der ersten n ungeraden Zahlen 1 + 3 + 5 + ...
+-- ✍️ NACHMACHEN (Aufgabe 4.1): die Summe der ersten n ungeraden Zahlen 1 + 3 + 5 + ...
 def ungerade : Nat → Nat
   | 0     => 0
   | n + 1 => ungerade n + (2 * n + 1)
@@ -51,7 +44,7 @@ theorem ungerade_formel (n : Nat) : ungerade n = n * n := by
       simp only [ungerade]
       grind
 
--- Aufgabe 2: teilmengen aus Mission 1. Zeige teilmengen n = 2 ^ n.
+-- ✍️ NACHMACHEN (Aufgabe 4.2): `teilmengen` aus Mission 1. Zeige teilmengen n = 2 ^ n.
 def teilmengen : Nat → Nat
   | 0     => 1
   | n + 1 => 2 * teilmengen n
@@ -60,22 +53,54 @@ theorem teilmengen_formel (n : Nat) : teilmengen n = 2 ^ n := by
   induction n with
   | zero => rfl
   | succ n iv =>
-      simp only [teilmengen, iv, Nat.pow_succ]
-      omega
+      simp only [teilmengen]
+      grind
 
--- Aufgabe 3: Eine Programmeigenschaft. `verdopple` läuft rekursiv über eine Liste.
+/- ─────────────────────────────────────────────────────────────
+  Schritt 2: Induktion über Listen
+──────────────────────────────────────────────────────────────── -/
+/-
+  Listen sind auch rekursiv gebaut: Eine Liste ist entweder leer `[]`
+  oder `x :: xs` (ein Element x vor einer Liste xs).
+  Darum funktioniert Induktion auch für Listen, mit den Fällen `nil` und `cons`.
+-/
+
+-- Jedes Element um 1 erhöhen
+def plusEins : List Nat → List Nat
+  | []      => []
+  | x :: xs => (x + 1) :: plusEins xs
+
+#eval plusEins [1, 2, 3]   -- [2, 3, 4]
+
+-- 👀 VORMACHEN: plusEins ändert die Länge der Liste nicht.
+theorem plusEins_laenge (xs : List Nat) : (plusEins xs).length = xs.length := by
+  induction xs with
+  | nil => rfl
+  | cons x xs iv =>
+      simp only [plusEins, List.length_cons, iv]
+
+-- Jedes Element verdoppeln
 def verdopple : List Nat → List Nat
   | []      => []
   | x :: xs => (2 * x) :: verdopple xs
 
 #eval verdopple [1, 2, 3]   -- [2, 4, 6]
 
--- Zeige: verdopple ändert die Länge der Liste nicht.
+-- ✍️ NACHMACHEN (Aufgabe 4.3): verdopple ändert die Länge der Liste nicht.
 theorem laenge_bleibt (xs : List Nat) : (verdopple xs).length = xs.length := by
   induction xs with
   | nil => rfl
   | cons x xs iv =>
       simp only [verdopple, List.length_cons, iv]
+
+-- 🚀 SELBSTMACHEN (Aufgabe 4.4): Die Summe der verdoppelten Liste ist doppelt so groß.
+theorem summe_verdoppelt (xs : List Nat) : (verdopple xs).sum = 2 * xs.sum := by
+  induction xs with
+  | nil => rfl
+  | cons x xs iv =>
+      simp only [verdopple, List.sum_cons]
+      grind
+
 
 /-
   ═════════════════════════════════════════════════════════════
@@ -95,7 +120,14 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
       let ax ← Lean.collectAxioms name
       if ax.contains ``sorryAx then offen := offen.push s!"{name}"
   if offen.isEmpty then
-    let s := s!"DDA-2026|{n.getNat}|" ++ ", ".intercalate (ids.toList.map (·.getId.toString))
+    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
+    let s := "DDA-2026|" ++ (match n.getNat with
+      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
+      | 1 => "1|beispiel_1_3, beispiel_1_4"
+      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
+      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
+      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
+      | k => s!"{k}|beispiel_5_3")
     let mut h : UInt64 := 14695981039346656037
     for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
     let abc := "ACEFHJKLMNPRTUVWXY3479".toList
@@ -104,5 +136,6 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
   else
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
+
 
 -- In der Musterlösung gibt es keinen Code. Den bekommst du nur mit deiner eigenen Lösung.

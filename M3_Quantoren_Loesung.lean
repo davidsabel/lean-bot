@@ -1,60 +1,87 @@
 import Lean
 /-
-  Mission 3: Quantoren
+  Musterlösung zu Mission 3: Quantoren
   ====================
-  ∀ x, P x    ist eine Funktion: Sie bekommt ein x und liefert einen Beweis von P x.
+  Hängst du fest? Tipps Schritt für Schritt (Strg+Klick):
+  https://github.com/davidsabel/lean-bot/blob/main/hilfen/M3.md
+
   ∃ x, P x    ist ein Paar ⟨x, Beweis⟩: ein Zeuge x und der Beweis, dass P x gilt.
+  ∀ x, P x    ist eine Funktion: Sie bekommt ein x und liefert einen Beweis von P x.
+
+  Zwei hilfreiche Taktiken:
+    decide   rechnet endliche Fragen mit konkreten Zahlen aus
+    omega    löst lineare Gleichungen und Ungleichungen über Nat automatisch
 -/
 
--- ∃: Zeuge angeben, Lean rechnet den Rest aus
-theorem beispiel_3_1 : ∃ n : Nat, n * n = 49 := ⟨7, rfl⟩
+/- ─────────────────────────────────────────────────────────────
+  Schritt 1: Es gibt ... (Zeuge angeben)
+──────────────────────────────────────────────────────────────── -/
 
--- ∀: eine Funktion über alle n
-theorem beispiel_3_2 : ∀ n : Nat, n + 0 = n := by
-  intro n
-  rfl
+-- 👀 VORMACHEN: Zeuge 7, den Rest rechnet Lean aus.
+theorem beispiel_existiert : ∃ n : Nat, n * n = 49 := ⟨7, rfl⟩
 
--- Eine eigene Aussageform: n ist gerade
+-- ✍️ NACHMACHEN (Aufgabe 3.1): Es gibt ein n mit n + n = 26.
+theorem aufgabe_3_1 : ∃ n : Nat, n + n = 26 := ⟨13, rfl⟩
+
+-- Eine eigene Aussageform: n ist gerade, wenn n = 2 * k für ein k.
 def gerade (n : Nat) : Prop := ∃ k, n = 2 * k
 
-theorem beispiel_3_3 : gerade 10 := ⟨5, rfl⟩
+-- 👀 VORMACHEN
+theorem beispiel_gerade : gerade 10 := ⟨5, rfl⟩
 
-/-
-  Die Taktik `omega` löst lineare Gleichungen und Ungleichungen über
-  natürlichen Zahlen automatisch. `decide` rechnet endliche Fragen aus.
--/
+-- ✍️ NACHMACHEN (Aufgabe 3.2): 42 ist gerade.
+theorem aufgabe_3_2 : gerade 42 := ⟨21, rfl⟩
 
--- Aufgabe 1: 2n ist immer gerade
-theorem beispiel_3_4 : ∀ n : Nat, gerade (2 * n) :=
-  fun n => ⟨n, rfl⟩
+/- ─────────────────────────────────────────────────────────────
+  Schritt 2: Für alle ... (eine Funktion)
+──────────────────────────────────────────────────────────────── -/
 
--- Aufgabe 2: Ist n gerade, dann auch n + 2.
--- Tipp: intro n h, dann h auspacken mit `obtain ⟨k, hk⟩ := h`, Zeuge k + 1, Rest mit omega.
-theorem beispiel_3_5 : ∀ n : Nat, gerade n → gerade (n + 2) := by
+-- 👀 VORMACHEN: 4n ist immer gerade. Für jedes n ist 2n der Zeuge, omega rechnet nach.
+theorem beispiel_alle : ∀ n : Nat, gerade (4 * n) :=
+  fun n => ⟨2 * n, by omega⟩
+
+-- ✍️ NACHMACHEN (Aufgabe 3.3): 2n ist immer gerade.
+theorem aufgabe_3_3 : ∀ n : Nat, gerade (2 * n) :=
+  fun n => ⟨n, by omega⟩
+
+-- 👀 VORMACHEN: Ist n gerade, dann auch n + 4. Mit Taktiken:
+theorem beispiel_plus4 : ∀ n : Nat, gerade n → gerade (n + 4) := by
+  intro n h
+  obtain ⟨k, hk⟩ := h        -- h auspacken: hk : n = 2 * k
+  exact ⟨k + 2, by omega⟩    -- n + 4 = 2 * (k + 2)
+
+-- ✍️ NACHMACHEN (Aufgabe 3.4): Ist n gerade, dann auch n + 2.
+theorem aufgabe_3_4 : ∀ n : Nat, gerade n → gerade (n + 2) := by
   intro n h
   obtain ⟨k, hk⟩ := h
   exact ⟨k + 1, by omega⟩
 
+/- ─────────────────────────────────────────────────────────────
+  Schritt 3: Gegenbeispiele
+──────────────────────────────────────────────────────────────── -/
 /-
-  Beispiele sind kein Beweis!
-  Für n = 0, 1, ..., 39 ist n*n + n + 41 eine Primzahl. Aber nicht für alle n.
-  Einen ∀-Satz widerlegt man durch ein Gegenbeispiel.
-  Wir zeigen: Es stimmt NICHT, dass n*n + n + 41 nie durch 41 teilbar ist.
+  Beispiele sind kein Beweis! Für n = 0, 1, ..., 39 ist n*n + n + 41 eine Primzahl,
+  aber nicht für alle n. Einen ∀-Satz widerlegt man durch EIN Gegenbeispiel.
 -/
-theorem beispiel_3_6 : ¬ (∀ n : Nat, (n * n + n + 41) % 41 ≠ 0) := by
-  intro h
-  exact h 41 (by decide)
 
--- Aufgabe 3: Widerlege "Jede natürliche Zahl ist kleiner als 100".
-theorem beispiel_3_7 : ¬ (∀ n : Nat, n < 100) := by
-  intro h
-  exact absurd (h 100) (by decide)
+-- 👀 VORMACHEN: Widerlege "Jede natürliche Zahl ist kleiner als 10".
+theorem beispiel_gegen : ¬ (∀ n : Nat, n < 10) := by
+  intro h            -- angenommen, es gilt für alle n ...
+  have h10 := h 10   -- ... dann auch für 10: h10 : 10 < 10
+  omega              -- Widerspruch
 
--- Aufgabe 4: Negation nach innen ziehen. Zeige: Wenn es KEIN n mit P n gibt,
--- dann gilt für alle n: ¬ P n.
-theorem beispiel_3_8 (P : Nat → Prop) : ¬ (∃ n, P n) → ∀ n, ¬ P n := by
-  intro h n pn
-  exact h ⟨n, pn⟩
+-- ✍️ NACHMACHEN (Aufgabe 3.5): Widerlege "Jede natürliche Zahl ist kleiner als 100".
+theorem aufgabe_3_5 : ¬ (∀ n : Nat, n < 100) := by
+  intro h
+  have h100 := h 100
+  omega
+
+-- 🚀 SELBSTMACHEN (Aufgabe 3.6): Widerlege "Jede natürliche Zahl ist gerade".
+theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
+  intro h
+  obtain ⟨k, hk⟩ := h 1
+  omega
+
 
 /-
   ═════════════════════════════════════════════════════════════
@@ -74,7 +101,14 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
       let ax ← Lean.collectAxioms name
       if ax.contains ``sorryAx then offen := offen.push s!"{name}"
   if offen.isEmpty then
-    let s := s!"DDA-2026|{n.getNat}|" ++ ", ".intercalate (ids.toList.map (·.getId.toString))
+    -- feste Codes je Mission (unabhängig davon, wie die Aufgaben heißen)
+    let s := "DDA-2026|" ++ (match n.getNat with
+      | 0 => "0|pruefung_verdopple, pruefung_quadrat"
+      | 1 => "1|beispiel_1_3, beispiel_1_4"
+      | 2 => "2|beispiel_2_3, beispiel_2_4, beispiel_2_5, beispiel_2_6, beispiel_2_8, beispiel_2_9"
+      | 3 => "3|beispiel_3_4, beispiel_3_5, beispiel_3_7, beispiel_3_8"
+      | 4 => "4|ungerade_formel, teilmengen_formel, laenge_bleibt"
+      | k => s!"{k}|beispiel_5_3")
     let mut h : UInt64 := 14695981039346656037
     for b in s.toUTF8 do h := (h ^^^ b.toUInt64) * 1099511628211
     let abc := "ACEFHJKLMNPRTUVWXY3479".toList
@@ -83,5 +117,6 @@ elab "#mission " n:num " prüft " ids:ident* : command => do
     logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: LEMMA-{code}"
   else
     logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
+
 
 -- In der Musterlösung gibt es keinen Code. Den bekommst du nur mit deiner eigenen Lösung.
