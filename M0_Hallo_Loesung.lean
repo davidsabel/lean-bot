@@ -85,6 +85,18 @@ theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "be
 -/
 open Lean Elab Command in
 elab "#mission " n:num " prüft " ids:ident* : command => do
+  -- die letzte Zeile darf nicht verändert werden
+  let soll : List String := match n.getNat with
+    | 0 => ["test_verdreifache", "test_flaeche", "test_quadrat", "test_bewertung"]
+    | 1 => ["test_summeQuadrate", "test_fak", "test_teilmengen"]
+    | 2 => ["aufgabe_2_1", "aufgabe_2_2", "aufgabe_2_3", "aufgabe_2_4", "aufgabe_2_5", "aufgabe_2_6", "aufgabe_2_7", "aufgabe_2_8", "aufgabe_2_9"]
+    | 3 => ["aufgabe_3_1", "aufgabe_3_2", "aufgabe_3_3", "aufgabe_3_4", "aufgabe_3_5", "aufgabe_3_6"]
+    | 4 => ["ungerade_formel", "teilmengen_formel", "laenge_bleibt", "summe_verdoppelt"]
+    | 5 => ["beispiel_5_3"]
+    | _ => []
+  if ids.toList.map (·.getId.toString) != soll then
+    logWarning m!"⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."
+    return
   let mut offen : Array String := #[]
   for id in ids do
     let name := id.getId
