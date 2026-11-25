@@ -31,14 +31,14 @@ elab "#tipp " m:num a:num s:(num)? : command => do
 open Lean Elab Command in
 elab "#mission " n:num " prüft " ids:ident* : command => do
   let some d ← daten s!"⟦{n.getNat}⟧ " | logWarning "Prüfdaten fehlen."
-  let [soll, code] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
+  let [soll, erfolg] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
   if ids.toList.map (·.getId.toString) != soll.splitOn " " then
     logWarning "⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."; return
   let mut offen := #[]
   for id in ids do
     if (← getEnv).find? id.getId |>.isNone then offen := offen.push s!"{id.getId} (fehlt)"
     else if (← Lean.collectAxioms id.getId).contains ``sorryAx then offen := offen.push s!"{id.getId}"
-  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: {code}"
+  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
   else logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- ═════════════════════════════════════════════════════════════
@@ -96,7 +96,7 @@ theorem beispiel_5_3 : Nat.Prime (2 ^ 7 - 1) := by
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦5⟧ cfjtqjfm`6`4}MFNNB.5LQK5
+⟦5⟧ cfjtqjfm`6`4}Efjo!Dpef!gýs!JMJBT;!MFNNB.5LQK5
 ⟦5 1 1⟧ 💢!Bvghbcf!6/2-!Ujqq!2;!Tdibv!ejs!cfjtqjfm`6`2!bo;!Epsu!{fjhu!fjof!fjo{jhf!Ublujl-!ebtt!212!fjof!Qsjn{bim!jtu/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!3
 ⟦5 1 2⟧ 💢!Bvghbcf!6/2-!Ujqq!3;!opsn`ovn¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!6!2!4
 ⟦5 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!6/2;¶¶uifpsfn!cfjtqjfm`6`4!;!Obu/Qsjnf!)3!_!8!.!2*!;>!cz¶!!opsn`ovn

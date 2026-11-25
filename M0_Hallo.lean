@@ -30,14 +30,14 @@ elab "#tipp " m:num a:num s:(num)? : command => do
 open Lean Elab Command in
 elab "#mission " n:num " prüft " ids:ident* : command => do
   let some d ← daten s!"⟦{n.getNat}⟧ " | logWarning "Prüfdaten fehlen."
-  let [soll, code] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
+  let [soll, erfolg] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
   if ids.toList.map (·.getId.toString) != soll.splitOn " " then
     logWarning "⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."; return
   let mut offen := #[]
   for id in ids do
     if (← getEnv).find? id.getId |>.isNone then offen := offen.push s!"{id.getId} (fehlt)"
     else if (← Lean.collectAxioms id.getId).contains ``sorryAx then offen := offen.push s!"{id.getId}"
-  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: {code}"
+  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
   else logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- ═════════════════════════════════════════════════════════════
@@ -114,7 +114,7 @@ theorem test_bewertung : bewertung 49 = "nicht bestanden" ∧ bewertung 50 = "be
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}MFNNB.Q4GZX
+⟦0⟧ uftu`wfsesfjgbdif!uftu`gmbfdif!uftu`rvbesbu!uftu`cfxfsuvoh}Efjo!Dpef!gýs!JMJBT;!MFNNB.Q4GZX
 ⟦0 1 1⟧ 💢!Bvghbcf!1/2-!Ujqq!2;!Tdibv!ejs!wfsepqqmf!bo/!Xbt!nvttu!ev!åoefso@¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!3
 ⟦0 1 2⟧ 💢!Bvghbcf!1/2-!Ujqq!3;!Tubuu!3!+!o!csbvditu!ev!4!+!o/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!1!2!4
 ⟦0 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!1/2;¶¶efg!wfsesfjgbdif!)o!;!Obu*!;!Obu!;>!4!+!o

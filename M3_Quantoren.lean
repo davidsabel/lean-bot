@@ -34,14 +34,14 @@ elab "#tipp " m:num a:num s:(num)? : command => do
 open Lean Elab Command in
 elab "#mission " n:num " prüft " ids:ident* : command => do
   let some d ← daten s!"⟦{n.getNat}⟧ " | logWarning "Prüfdaten fehlen."
-  let [soll, code] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
+  let [soll, erfolg] := d.splitOn "|" | logWarning "Prüfdaten fehlen."
   if ids.toList.map (·.getId.toString) != soll.splitOn " " then
     logWarning "⚠️ Die Zeile #mission wurde verändert. Bitte die Datei neu öffnen."; return
   let mut offen := #[]
   for id in ids do
     if (← getEnv).find? id.getId |>.isNone then offen := offen.push s!"{id.getId} (fehlt)"
     else if (← Lean.collectAxioms id.getId).contains ``sorryAx then offen := offen.push s!"{id.getId}"
-  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\nDein Code für ILIAS: {code}"
+  if offen.isEmpty then logInfo m!"✅ Mission {n.getNat} geschafft!\n{erfolg}"
   else logWarning m!"⏳ Mission {n.getNat} ist noch nicht fertig.\nNoch offen: {", ".intercalate offen.toList}"
 
 /- ═════════════════════════════════════════════════════════════
@@ -123,7 +123,7 @@ theorem aufgabe_3_6 : ¬ (∀ n : Nat, gerade n) := by
 
 
 /- Daten für Tipps und Prüfstation (verschlüsselt, bitte nicht ändern)
-⟦3⟧ bvghbcf`4`2!bvghbcf`4`3!bvghbcf`4`4!bvghbcf`4`5!bvghbcf`4`6!bvghbcf`4`7}MFNNB.8DGBM
+⟦3⟧ bvghbcf`4`2!bvghbcf`4`3!bvghbcf`4`4!bvghbcf`4`5!bvghbcf`4`6!bvghbcf`4`7}Efjo!Dpef!gýs!JMJBT;!MFNNB.8DGBM
 ⟦3 1 1⟧ 💢!Bvghbcf!4/2-!Ujqq!2;!Xfmdif![bim!jtu!efs![fvhf@!Eboo!xjf!jn!Cfjtqjfm;!⟩[fvhf-!sgm⟪/¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!2!3
 ⟦3 1 2⟧ 💢!Bvghbcf!4/2-!Ujqq!3;!⟩24-!sgm⟪¶¶Opdi!fjo!Tdisjuu!xfjufs;!$ujqq!4!2!4
 ⟦3 1 3⟧ 🔒!M÷tvoh!{v!Bvghbcf!4/2;¶¶uifpsfn!bvghbcf`4`2!;!∄!o!;!Obu-!o!,!o!>!37!;>!⟩24-!sgm⟪
